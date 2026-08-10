@@ -55,18 +55,15 @@ export default function Footer({ onOpenEstimator, onOpenPrivacyPolicy }) {
                   About FramEmpire
                 </a>
               </li>
-              <li>
-                <a 
-                  href="/privacy-policy" 
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (onOpenPrivacyPolicy) onOpenPrivacyPolicy();
-                  }} 
-                  className="hover:text-cyan-300 text-cyan-400 font-bold transition-colors inline-flex items-center gap-1.5"
+              <li className="pt-1">
+                <button 
+                  type="button"
+                  onClick={onOpenPrivacyPolicy}
+                  className="bg-cyan-950/80 hover:bg-cyan-900/90 text-cyan-300 hover:text-white border border-cyan-500/40 hover:border-cyan-400 text-[11px] font-bold py-1.5 px-3 rounded-xl transition-all shadow-[0_0_12px_rgba(0,243,255,0.15)] flex items-center gap-1.5 cursor-pointer"
                 >
                   <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
                   <span>Privacy Policy</span>
-                </a>
+                </button>
               </li>
             </ul>
           </div>
@@ -95,17 +92,14 @@ export default function Footer({ onOpenEstimator, onOpenPrivacyPolicy }) {
           <p>© {new Date().getFullYear()} <strong className="text-white">FramEmpire Studio</strong>. All Rights Reserved.</p>
           
           <div className="flex items-center gap-3">
-            <a 
-              href="/privacy-policy"
-              onClick={(e) => {
-                e.preventDefault();
-                if (onOpenPrivacyPolicy) onOpenPrivacyPolicy();
-              }} 
-              className="text-cyan-400 hover:text-cyan-300 font-bold transition-colors underline flex items-center gap-1 cursor-pointer"
+            <button 
+              type="button"
+              onClick={onOpenPrivacyPolicy}
+              className="bg-slate-900 hover:bg-cyan-950 text-cyan-400 hover:text-cyan-300 border border-slate-800 hover:border-cyan-500/40 font-bold text-[11px] py-1 px-3 rounded-full transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
             >
               <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
               <span>Privacy Policy</span>
-            </a>
+            </button>
             <span className="text-slate-600">•</span>
             <div className="flex items-center gap-1 text-slate-300">
               <span>Designed & Engineered by</span>
