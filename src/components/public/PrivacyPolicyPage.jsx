@@ -1,37 +1,13 @@
 import React, { useEffect } from 'react';
-import { ShieldCheck, ArrowLeft, Lock, FileText, Mail, Phone, Globe, CheckCircle2, Server, EyeOff, Cookie, Cpu, Sparkles, AlertCircle, Layers } from 'lucide-react';
+import { ShieldCheck, ArrowLeft, Lock, FileText, Mail, Phone, Globe, CheckCircle2, Server, EyeOff, Cookie, Cpu, AlertCircle, Layers } from 'lucide-react';
 import Footer from './Footer';
 
 export default function PrivacyPolicyPage({ onBackToHome, onOpenEstimator, onOpenPrivacyPolicy }) {
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-
-    const originalTitle = document.title;
-    document.title = "Privacy Policy — FramEmpire Studio";
-
-    const updateMeta = (selector, attribute, value) => {
-      let el = document.querySelector(selector);
-      if (!el) {
-        el = document.createElement('meta');
-        if (selector.includes('property=')) {
-          const prop = selector.match(/property="([^"]+)"/)[1];
-          el.setAttribute('property', prop);
-        } else if (selector.includes('name=')) {
-          const name = selector.match(/name="([^"]+)"/)[1];
-          el.setAttribute('name', name);
-        }
-        document.head.appendChild(el);
-      }
-      el.setAttribute(attribute, value);
-    };
-
-    updateMeta('meta[property="og:title"]', 'content', 'Privacy Policy — FramEmpire Studio');
-    updateMeta('meta[property="og:description"]', '100% Client Ownership, Privacy Policy & Confidentiality Terms for FramEmpire Studio services.');
-    updateMeta('meta[name="twitter:title"]', 'content', 'Privacy Policy — FramEmpire Studio');
-
-    return () => {
-      document.title = originalTitle;
-    };
+    try {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      document.title = "Privacy Policy — FramEmpire Studio";
+    } catch (e) {}
   }, []);
 
   return (
@@ -56,6 +32,7 @@ export default function PrivacyPolicyPage({ onBackToHome, onOpenEstimator, onOpe
 
           <div className="flex items-center gap-3">
             <button
+              type="button"
               onClick={onBackToHome}
               className="text-xs font-semibold text-slate-300 hover:text-cyan-400 transition-all flex items-center gap-1.5 bg-slate-900/90 px-3.5 py-1.5 rounded-full border border-slate-800 hover:border-cyan-500/40 cursor-pointer shadow-sm"
             >
@@ -63,13 +40,16 @@ export default function PrivacyPolicyPage({ onBackToHome, onOpenEstimator, onOpe
               <span>Back to Studio</span>
             </button>
 
-            <button
-              onClick={onOpenEstimator}
-              className="neon-button-secondary py-1.5 px-4 text-xs rounded-full shadow-[0_0_15px_rgba(0,243,255,0.25)] hidden sm:flex items-center gap-1.5 font-bold cursor-pointer"
-            >
-              <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
-              <span>Project Estimator</span>
-            </button>
+            {onOpenEstimator && (
+              <button
+                type="button"
+                onClick={onOpenEstimator}
+                className="neon-button-secondary py-1.5 px-4 text-xs rounded-full shadow-[0_0_15px_rgba(0,243,255,0.25)] hidden sm:flex items-center gap-1.5 font-bold cursor-pointer"
+              >
+                <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
+                <span>Project Estimator</span>
+              </button>
+            )}
           </div>
         </div>
       </header>
