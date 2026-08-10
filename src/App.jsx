@@ -11,6 +11,7 @@ import Footer from './components/public/Footer';
 import WhatsAppWidget from './components/public/WhatsAppWidget';
 
 import TicTacToeGamePage from './components/public/TicTacToeGamePage';
+import PrivacyPolicyPage from './components/public/PrivacyPolicyPage';
 import EmployeeLoginModal from './components/auth/EmployeeLoginModal';
 import AdminDashboard from './components/admin/AdminDashboard';
 import { PORTFOLIO_PROJECTS } from './data/creativeData';
@@ -21,11 +22,12 @@ const getInitialViewMode = () => {
   const hash = window.location.hash.toLowerCase();
   if (path === '/admin' || path.startsWith('/admin') || hash === '#admin') return 'admin';
   if (path === '/tictactoe' || path === '/tic-tac-toe' || path.startsWith('/tictactoe') || hash === '#tictactoe') return 'tictactoe';
+  if (path === '/privacy-policy' || path === '/privacy' || path.startsWith('/privacy') || hash === '#privacy') return 'privacy-policy';
   return 'public';
 };
 
 export default function App() {
-  const [viewMode, setViewMode] = useState(getInitialViewMode); // 'public' | 'admin' | 'tictactoe'
+  const [viewMode, setViewMode] = useState(getInitialViewMode); // 'public' | 'admin' | 'tictactoe' | 'privacy-policy'
   const [userRole, setUserRole] = useState('Admin / Executive');
   const [estimatorOpen, setEstimatorOpen] = useState(false);
   const [estimatorService, setEstimatorService] = useState('motion-graphics');
@@ -34,7 +36,7 @@ export default function App() {
   // Dynamic Portfolio Projects State (Supports YouTube, Vimeo, Behance embeds added via Admin Panel)
   const [projectsList, setProjectsList] = useState(PORTFOLIO_PROJECTS);
 
-  // URL Path & Hash Listener for /admin and /tictactoe routes
+  // URL Path & Hash Listener for /admin, /tictactoe and /privacy-policy routes
   useEffect(() => {
     const checkRoute = () => {
       const path = window.location.pathname.toLowerCase();
@@ -45,6 +47,8 @@ export default function App() {
         setLoginModalOpen(true);
       } else if (path === '/tictactoe' || path === '/tic-tac-toe' || path.startsWith('/tictactoe') || hash === '#tictactoe') {
         setViewMode('tictactoe');
+      } else if (path === '/privacy-policy' || path === '/privacy' || path.startsWith('/privacy') || hash === '#privacy') {
+        setViewMode('privacy-policy');
       } else {
         setViewMode('public');
       }
@@ -64,8 +68,12 @@ export default function App() {
       if (window.location.pathname !== '/tictactoe') {
         window.history.pushState(null, '', '/tictactoe');
       }
+    } else if (viewMode === 'privacy-policy') {
+      if (window.location.pathname !== '/privacy-policy') {
+        window.history.pushState(null, '', '/privacy-policy');
+      }
     } else {
-      if (window.location.pathname === '/admin' || window.location.pathname === '/tictactoe' || window.location.pathname === '/tic-tac-toe') {
+      if (window.location.pathname === '/admin' || window.location.pathname === '/tictactoe' || window.location.pathname === '/tic-tac-toe' || window.location.pathname === '/privacy-policy' || window.location.pathname === '/privacy') {
         window.history.pushState(null, '', '/');
       }
     }
@@ -89,11 +97,16 @@ export default function App() {
     window.history.pushState(null, '', '/');
   };
 
+  const handleOpenPrivacyPolicy = () => {
+    setViewMode('privacy-policy');
+    window.history.pushState(null, '', '/privacy-policy');
+  };
+
   return (
     <div className="min-h-screen bg-[#070913] text-slate-100 font-sans selection:bg-cyan-500 selection:text-black relative">
       
-      {/* Sticky Glassmorphism Header Navbar (Hidden on dedicated /tictactoe page) */}
-      {viewMode !== 'tictactoe' && (
+      {/* Sticky Glassmorphism Header Navbar (Hidden on dedicated /tictactoe & /privacy-policy pages) */}
+      {viewMode !== 'tictactoe' && viewMode !== 'privacy-policy' && (
         <Navbar 
           viewMode={viewMode}
           onToggleViewMode={() => {
@@ -145,7 +158,10 @@ export default function App() {
 
           <TeamCaptainSection />
 
-          <Footer onOpenEstimator={() => setEstimatorOpen(true)} />
+          <Footer 
+            onOpenEstimator={() => setEstimatorOpen(true)} 
+            onOpenPrivacyPolicy={handleOpenPrivacyPolicy}
+          />
         </main>
       ) : viewMode === 'tictactoe' ? (
         <TicTacToeGamePage 
@@ -154,6 +170,15 @@ export default function App() {
             window.history.pushState(null, '', '/');
           }}
           onOpenEstimator={() => setEstimatorOpen(true)}
+        />
+      ) : viewMode === 'privacy-policy' ? (
+        <PrivacyPolicyPage 
+          onBackToHome={() => {
+            setViewMode('public');
+            window.history.pushState(null, '', '/');
+          }}
+          onOpenEstimator={() => setEstimatorOpen(true)}
+          onOpenPrivacyPolicy={handleOpenPrivacyPolicy}
         />
       ) : (
         <AdminDashboard 

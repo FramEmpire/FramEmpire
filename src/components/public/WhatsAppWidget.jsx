@@ -15,8 +15,8 @@ const KNOWLEDGE_BASE = {
 function checkIsWithinWorkingHours() {
   try {
     const now = new Date();
-    const options = { timeZone: 'Asia/Dhaka', hour: 'numeric', hour12: false };
-    const bdHour = parseInt(new Intl.DateTimeFormat('en-US', options).format(now), 10);
+    const bdTimeStr = now.toLocaleString('en-US', { timeZone: 'Asia/Dhaka', hour: 'numeric', hourCycle: 'h23' });
+    const bdHour = parseInt(bdTimeStr, 10);
     return bdHour >= 10 && bdHour < 22;
   } catch (err) {
     const localHour = new Date().getHours();

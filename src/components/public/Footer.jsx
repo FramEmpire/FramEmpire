@@ -2,7 +2,7 @@ import React from 'react';
 import { Sparkles, Heart, Globe, Cpu } from 'lucide-react';
 import { AGENCY_INFO } from '../../data/creativeData';
 
-export default function Footer({ onOpenEstimator }) {
+export default function Footer({ onOpenEstimator, onOpenPrivacyPolicy }) {
   return (
     <footer className="bg-[#04060d] border-t border-cyan-500/20 pt-16 pb-12 px-4 relative text-xs text-slate-400">
       <div className="max-w-7xl mx-auto space-y-12">
@@ -43,6 +43,7 @@ export default function Footer({ onOpenEstimator }) {
               <li><button onClick={onOpenEstimator} className="hover:text-cyan-300 transition-colors text-left">Interactive Project Estimator</button></li>
               <li><a href="#portfolio" className="hover:text-cyan-300 transition-colors">Showcase Reel 2026</a></li>
               <li><a href="#about" className="hover:text-cyan-300 transition-colors">About FramEmpire</a></li>
+              <li><button onClick={onOpenPrivacyPolicy} className="hover:text-cyan-300 transition-colors text-left text-slate-300 font-semibold">Privacy Policy</button></li>
             </ul>
           </div>
 
@@ -65,12 +66,22 @@ export default function Footer({ onOpenEstimator }) {
 
         </div>
 
-        {/* Bottom Bar: Clean FramEmpire Credits */}
+        {/* Bottom Bar: Clean FramEmpire Credits & Privacy Policy */}
         <div className="pt-8 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-400">
           <p>© {new Date().getFullYear()} <strong className="text-white">FramEmpire Studio</strong>. All Rights Reserved.</p>
-          <div className="flex items-center gap-1 text-slate-300">
-            <span>Designed & Engineered by</span>
-            <strong className="text-cyan-400 font-['Creato_Display']">FramEmpire</strong>
+          
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={onOpenPrivacyPolicy} 
+              className="text-slate-300 hover:text-cyan-400 font-semibold transition-colors underline cursor-pointer"
+            >
+              Privacy Policy
+            </button>
+            <span className="text-slate-600">•</span>
+            <div className="flex items-center gap-1 text-slate-300">
+              <span>Designed & Engineered by</span>
+              <strong className="text-cyan-400 font-['Creato_Display']">FramEmpire</strong>
+            </div>
           </div>
         </div>
 
