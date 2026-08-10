@@ -55,16 +55,6 @@ export default function Footer({ onOpenEstimator, onOpenPrivacyPolicy }) {
                   About FramEmpire
                 </a>
               </li>
-              <li className="pt-1">
-                <button 
-                  type="button"
-                  onClick={onOpenPrivacyPolicy}
-                  className="bg-cyan-950/80 hover:bg-cyan-900/90 text-cyan-300 hover:text-white border border-cyan-500/40 hover:border-cyan-400 text-[11px] font-bold py-1.5 px-3 rounded-xl transition-all shadow-[0_0_12px_rgba(0,243,255,0.15)] flex items-center gap-1.5 cursor-pointer"
-                >
-                  <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
-                  <span>Privacy Policy</span>
-                </button>
-              </li>
             </ul>
           </div>
 
