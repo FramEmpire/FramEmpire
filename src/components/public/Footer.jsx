@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, Heart, Globe, Cpu } from 'lucide-react';
+import { Sparkles, Heart, Globe, Cpu, ShieldCheck } from 'lucide-react';
 import { AGENCY_INFO } from '../../data/creativeData';
 
 export default function Footer({ onOpenEstimator, onOpenPrivacyPolicy }) {
@@ -40,10 +40,34 @@ export default function Footer({ onOpenEstimator, onOpenPrivacyPolicy }) {
           <div className="space-y-3">
             <h4 className="font-bold text-white uppercase text-[11px] tracking-wider font-['Creato_Display']">Client Portal</h4>
             <ul className="space-y-2">
-              <li><button onClick={onOpenEstimator} className="hover:text-cyan-300 transition-colors text-left">Interactive Project Estimator</button></li>
-              <li><a href="#portfolio" className="hover:text-cyan-300 transition-colors">Showcase Reel 2026</a></li>
-              <li><a href="#about" className="hover:text-cyan-300 transition-colors">About FramEmpire</a></li>
-              <li><button onClick={onOpenPrivacyPolicy} className="hover:text-cyan-300 transition-colors text-left text-slate-300 font-semibold">Privacy Policy</button></li>
+              <li>
+                <button onClick={onOpenEstimator} className="hover:text-cyan-300 transition-colors text-left">
+                  Interactive Project Estimator
+                </button>
+              </li>
+              <li>
+                <a href="#portfolio" className="hover:text-cyan-300 transition-colors">
+                  Showcase Reel 2026
+                </a>
+              </li>
+              <li>
+                <a href="#about" className="hover:text-cyan-300 transition-colors">
+                  About FramEmpire
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="/privacy-policy" 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (onOpenPrivacyPolicy) onOpenPrivacyPolicy();
+                  }} 
+                  className="hover:text-cyan-300 text-cyan-400 font-bold transition-colors inline-flex items-center gap-1.5"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
+                  <span>Privacy Policy</span>
+                </a>
+              </li>
             </ul>
           </div>
 
@@ -71,12 +95,17 @@ export default function Footer({ onOpenEstimator, onOpenPrivacyPolicy }) {
           <p>© {new Date().getFullYear()} <strong className="text-white">FramEmpire Studio</strong>. All Rights Reserved.</p>
           
           <div className="flex items-center gap-3">
-            <button 
-              onClick={onOpenPrivacyPolicy} 
-              className="text-slate-300 hover:text-cyan-400 font-semibold transition-colors underline cursor-pointer"
+            <a 
+              href="/privacy-policy"
+              onClick={(e) => {
+                e.preventDefault();
+                if (onOpenPrivacyPolicy) onOpenPrivacyPolicy();
+              }} 
+              className="text-cyan-400 hover:text-cyan-300 font-bold transition-colors underline flex items-center gap-1 cursor-pointer"
             >
-              Privacy Policy
-            </button>
+              <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
+              <span>Privacy Policy</span>
+            </a>
             <span className="text-slate-600">•</span>
             <div className="flex items-center gap-1 text-slate-300">
               <span>Designed & Engineered by</span>
