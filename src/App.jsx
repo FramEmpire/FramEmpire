@@ -16,13 +16,31 @@ import EmployeeLoginModal from './components/auth/EmployeeLoginModal';
 import AdminDashboard from './components/admin/AdminDashboard';
 import { PORTFOLIO_PROJECTS } from './data/creativeData';
 
+const checkPathIsAdmin = (pathStr, hashStr) => {
+  const p = (pathStr || '').toLowerCase();
+  const h = (hashStr || '').toLowerCase();
+  return p.includes('/admin') || h.includes('admin');
+};
+
+const checkPathIsTicTacToe = (pathStr, hashStr) => {
+  const p = (pathStr || '').toLowerCase();
+  const h = (hashStr || '').toLowerCase();
+  return p.includes('/tictactoe') || p.includes('/tic-tac-toe') || h.includes('tictactoe');
+};
+
+const checkPathIsPrivacy = (pathStr, hashStr) => {
+  const p = (pathStr || '').toLowerCase();
+  const h = (hashStr || '').toLowerCase();
+  return p.includes('privacy');
+};
+
 const getInitialViewMode = () => {
   if (typeof window === 'undefined') return 'public';
-  const path = window.location.pathname.toLowerCase();
-  const hash = window.location.hash.toLowerCase();
-  if (path === '/admin' || path.startsWith('/admin') || hash === '#admin') return 'admin';
-  if (path === '/tictactoe' || path === '/tic-tac-toe' || path.startsWith('/tictactoe') || hash === '#tictactoe') return 'tictactoe';
-  if (path === '/privacy-policy' || path === '/privacy' || path.startsWith('/privacy') || hash === '#privacy') return 'privacy-policy';
+  const path = window.location.pathname;
+  const hash = window.location.hash;
+  if (checkPathIsAdmin(path, hash)) return 'admin';
+  if (checkPathIsTicTacToe(path, hash)) return 'tictactoe';
+  if (checkPathIsPrivacy(path, hash)) return 'privacy-policy';
   return 'public';
 };
 
@@ -39,15 +57,15 @@ export default function App() {
   // URL Path & Hash Listener for /admin, /tictactoe and /privacy-policy routes
   useEffect(() => {
     const checkRoute = () => {
-      const path = window.location.pathname.toLowerCase();
-      const hash = window.location.hash.toLowerCase();
+      const path = window.location.pathname;
+      const hash = window.location.hash;
       
-      if (path === '/admin' || path.startsWith('/admin') || hash === '#admin') {
+      if (checkPathIsAdmin(path, hash)) {
         setViewMode('admin');
         setLoginModalOpen(true);
-      } else if (path === '/tictactoe' || path === '/tic-tac-toe' || path.startsWith('/tictactoe') || hash === '#tictactoe') {
+      } else if (checkPathIsTicTacToe(path, hash)) {
         setViewMode('tictactoe');
-      } else if (path === '/privacy-policy' || path === '/privacy' || path.startsWith('/privacy') || hash === '#privacy') {
+      } else if (checkPathIsPrivacy(path, hash)) {
         setViewMode('privacy-policy');
       } else {
         setViewMode('public');
@@ -61,19 +79,21 @@ export default function App() {
   // Update URL Bar when switching viewMode
   useEffect(() => {
     if (viewMode === 'admin') {
-      if (window.location.pathname !== '/admin') {
+      if (!checkPathIsAdmin(window.location.pathname, window.location.hash)) {
         window.history.pushState(null, '', '/admin');
       }
     } else if (viewMode === 'tictactoe') {
-      if (window.location.pathname !== '/tictactoe') {
+      if (!checkPathIsTicTacToe(window.location.pathname, window.location.hash)) {
         window.history.pushState(null, '', '/tictactoe');
       }
     } else if (viewMode === 'privacy-policy') {
-      if (window.location.pathname !== '/privacy-policy') {
+      if (!checkPathIsPrivacy(window.location.pathname, window.location.hash)) {
         window.history.pushState(null, '', '/privacy-policy');
       }
     } else {
-      if (window.location.pathname === '/admin' || window.location.pathname === '/tictactoe' || window.location.pathname === '/tic-tac-toe' || window.location.pathname === '/privacy-policy' || window.location.pathname === '/privacy') {
+      if (checkPathIsAdmin(window.location.pathname, window.location.hash) || 
+          checkPathIsTicTacToe(window.location.pathname, window.location.hash) || 
+          checkPathIsPrivacy(window.location.pathname, window.location.hash)) {
         window.history.pushState(null, '', '/');
       }
     }
