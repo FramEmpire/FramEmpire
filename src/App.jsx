@@ -12,7 +12,6 @@ import WhatsAppWidget from './components/public/WhatsAppWidget';
 
 import TicTacToeGamePage from './components/public/TicTacToeGamePage';
 import PrivacyPolicyPage from './components/public/PrivacyPolicyPage';
-import PrivacyPolicyModal from './components/public/PrivacyPolicyModal';
 import EmployeeLoginModal from './components/auth/EmployeeLoginModal';
 import AdminDashboard from './components/admin/AdminDashboard';
 import { PORTFOLIO_PROJECTS } from './data/creativeData';
@@ -51,7 +50,6 @@ export default function App() {
   const [estimatorOpen, setEstimatorOpen] = useState(false);
   const [estimatorService, setEstimatorService] = useState('motion-graphics');
   const [loginModalOpen, setLoginModalOpen] = useState(false);
-  const [privacyModalOpen, setPrivacyModalOpen] = useState(() => checkPathIsPrivacy(typeof window !== 'undefined' ? window.location.pathname : '', typeof window !== 'undefined' ? window.location.hash : ''));
 
   // Dynamic Portfolio Projects State (Supports YouTube, Vimeo, Behance embeds added via Admin Panel)
   const [projectsList, setProjectsList] = useState(PORTFOLIO_PROJECTS);
@@ -69,7 +67,6 @@ export default function App() {
         setViewMode('tictactoe');
       } else if (checkPathIsPrivacy(path, hash)) {
         setViewMode('privacy-policy');
-        setPrivacyModalOpen(true);
       } else {
         setViewMode('public');
       }
@@ -121,7 +118,6 @@ export default function App() {
   };
 
   const handleOpenPrivacyPolicy = () => {
-    setPrivacyModalOpen(true);
     setViewMode('privacy-policy');
     window.history.pushState(null, '', '/privacy-policy');
   };
@@ -239,12 +235,6 @@ export default function App() {
           setViewMode('admin');
           setLoginModalOpen(false);
         }}
-      />
-
-      {/* Interactive Privacy Policy Modal */}
-      <PrivacyPolicyModal 
-        isOpen={privacyModalOpen}
-        onClose={() => setPrivacyModalOpen(false)}
       />
 
       {/* Always-On-Display WhatsApp Live Chat Widget */}
