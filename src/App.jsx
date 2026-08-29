@@ -22,10 +22,10 @@ const checkPathIsAdmin = (pathStr, hashStr) => {
   return p.includes('/admin') || h.includes('admin');
 };
 
-const checkPathIsTicTacToe = (pathStr, hashStr) => {
+const checkPathIsFeat = (pathStr, hashStr) => {
   const p = (pathStr || '').toLowerCase();
   const h = (hashStr || '').toLowerCase();
-  return p.includes('/tictactoe') || p.includes('/tic-tac-toe') || h.includes('tictactoe');
+  return p.includes('/feat') || p.includes('/tictactoe') || p.includes('/tic-tac-toe') || p.includes('/apps') || p.includes('/developer') || h.includes('feat') || h.includes('tictactoe');
 };
 
 const checkPathIsPrivacy = (pathStr, hashStr) => {
@@ -39,7 +39,7 @@ const getInitialViewMode = () => {
   const path = window.location.pathname;
   const hash = window.location.hash;
   if (checkPathIsAdmin(path, hash)) return 'admin';
-  if (checkPathIsTicTacToe(path, hash)) return 'tictactoe';
+  if (checkPathIsFeat(path, hash)) return 'tictactoe';
   if (checkPathIsPrivacy(path, hash)) return 'privacy-policy';
   return 'public';
 };
@@ -54,7 +54,7 @@ export default function App() {
   // Dynamic Portfolio Projects State (Supports YouTube, Vimeo, Behance embeds added via Admin Panel)
   const [projectsList, setProjectsList] = useState(PORTFOLIO_PROJECTS);
 
-  // URL Path & Hash Listener for /admin, /tictactoe and /privacy-policy routes
+  // URL Path & Hash Listener for /admin, /feat, /tictactoe and /privacy-policy routes
   useEffect(() => {
     const checkRoute = () => {
       const path = window.location.pathname;
@@ -63,7 +63,7 @@ export default function App() {
       if (checkPathIsAdmin(path, hash)) {
         setViewMode('admin');
         setLoginModalOpen(true);
-      } else if (checkPathIsTicTacToe(path, hash)) {
+      } else if (checkPathIsFeat(path, hash)) {
         setViewMode('tictactoe');
       } else if (checkPathIsPrivacy(path, hash)) {
         setViewMode('privacy-policy');
@@ -83,8 +83,8 @@ export default function App() {
         window.history.pushState(null, '', '/admin');
       }
     } else if (viewMode === 'tictactoe') {
-      if (!checkPathIsTicTacToe(window.location.pathname, window.location.hash)) {
-        window.history.pushState(null, '', '/tictactoe');
+      if (!checkPathIsFeat(window.location.pathname, window.location.hash)) {
+        window.history.pushState(null, '', '/feat');
       }
     } else if (viewMode === 'privacy-policy') {
       if (!checkPathIsPrivacy(window.location.pathname, window.location.hash)) {
@@ -92,7 +92,7 @@ export default function App() {
       }
     } else {
       if (checkPathIsAdmin(window.location.pathname, window.location.hash) || 
-          checkPathIsTicTacToe(window.location.pathname, window.location.hash) || 
+          checkPathIsFeat(window.location.pathname, window.location.hash) || 
           checkPathIsPrivacy(window.location.pathname, window.location.hash)) {
         window.history.pushState(null, '', '/');
       }
@@ -143,7 +143,7 @@ export default function App() {
           onOpenEstimator={() => setEstimatorOpen(true)}
           onOpenGamePage={() => {
             setViewMode('tictactoe');
-            window.history.pushState(null, '', '/tictactoe');
+            window.history.pushState(null, '', '/feat');
           }}
           onSignOut={handleSignOutAdmin}
         />
@@ -163,7 +163,7 @@ export default function App() {
           <FeaturedGameSection 
             onOpenGameDetails={() => {
               setViewMode('tictactoe');
-              window.history.pushState(null, '', '/tictactoe');
+              window.history.pushState(null, '', '/feat');
             }}
           />
 
