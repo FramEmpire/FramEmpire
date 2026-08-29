@@ -1,52 +1,128 @@
 import React, { useState, useEffect } from 'react';
-import { Download, Github, Gamepad2, Star, ShieldAlert, MapPin, Cpu, UserCheck, Award, X, Sparkles, ChevronLeft, ChevronRight, Share2, Check } from 'lucide-react';
+import { Download, Github, Gamepad2, Star, ShieldAlert, MapPin, Cpu, UserCheck, Award, X, Sparkles, ChevronLeft, ChevronRight, Share2, Check, Smartphone, Monitor, Layers, ArrowRight, ExternalLink, Zap, CheckCircle2, ShieldCheck, Filter } from 'lucide-react';
 import Footer from './Footer';
 
 export default function TicTacToeGamePage({ onBackToHome, onOpenEstimator }) {
+  const [activeCategory, setActiveCategory] = useState('all');
+  const [copiedLink, setCopiedLink] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const [lightboxImage, setLightboxImage] = useState(null);
-  const [copiedLink, setCopiedLink] = useState(false);
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-
-    // Store original document title
-    const originalTitle = document.title;
-    document.title = "Tic Tac Toe: GenZ Multiplayer — Official Mobile Game by EDP Universe";
-
-    // Dynamic Meta Tag Update Helper for WhatsApp / Facebook / Twitter / Telegram Preview Cards
-    const updateMeta = (selector, attribute, value) => {
-      let el = document.querySelector(selector);
-      if (!el) {
-        el = document.createElement('meta');
-        if (selector.includes('property=')) {
-          const prop = selector.match(/property="([^"]+)"/)[1];
-          el.setAttribute('property', prop);
-        } else if (selector.includes('name=')) {
-          const name = selector.match(/name="([^"]+)"/)[1];
-          el.setAttribute('name', name);
-        }
-        document.head.appendChild(el);
-      }
-      el.setAttribute(attribute, value);
-    };
-
-    const hostOrigin = window.location.origin || 'https://framempire.com';
-    const absoluteGameIcon = `${hostOrigin}/tictactoe_game_icon.png`;
-
-    updateMeta('meta[property="og:title"]', 'content', 'Tic Tac Toe: GenZ Multiplayer — EDP Universe');
-    updateMeta('meta[property="og:description"]', 'content', 'Explore 100 authentic Feni villages, scale from 3x3 to 12x12 boards, unlock arcade avatars & conquer the Minimax AI engine! Download Android APK v1.0.1.');
-    updateMeta('meta[property="og:image"]', 'content', absoluteGameIcon);
-    updateMeta('meta[property="og:image:width"]', 'content', '1024');
-    updateMeta('meta[property="og:image:height"]', 'content', '1024');
-    updateMeta('meta[name="twitter:title"]', 'content', 'Tic Tac Toe: GenZ Multiplayer');
-    updateMeta('meta[name="twitter:description"]', 'content', 'Explore 100 authentic Feni villages & Minimax AI engine. Download Android APK.');
-    updateMeta('meta[name="twitter:image"]', 'content', absoluteGameIcon);
-
-    return () => {
-      document.title = originalTitle;
-    };
+    try {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      document.title = "FE Apps & Developer Hub — Official Software by FramEmpire Studio";
+    } catch (e) {}
   }, []);
+
+  const handleShare = () => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(window.location.href);
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2500);
+    }
+  };
+
+  // Official Developer Software Portfolio Data
+  const developerApps = [
+    {
+      id: 'fe-player',
+      title: 'FE Player — Multimedia Organizer',
+      category: 'desktop',
+      badgeText: 'CROSS-PLATFORM SOFTWARE',
+      badgeColor: 'border-cyan-500/40 text-cyan-300 bg-cyan-950/60',
+      logo: '/fe_player_logo.png',
+      tagline: 'High-Performance 3D Media Player & Smart Library Organizer',
+      description: 'Next-gen cross-platform multimedia organizer designed for high-resolution video playback, intelligent audio tagging, ultra-low latency streaming, and media asset management.',
+      platforms: ['Windows', 'macOS', 'Android'],
+      features: [
+        'Multi-format High-Res Video & Audio Engine',
+        'Smart Library Tagging & Media Organizer',
+        'Hardware Accelerated Ultra-Low Latency',
+        'Sleek Cyber Glassmorphism Interface'
+      ],
+      downloads: [
+        {
+          label: 'Windows Setup (.exe)',
+          url: 'https://github.com/pabeledp/FEPlayer/raw/main/windows_installer_output/FEPlayer-Windows-Setup.exe',
+          icon: 'windows',
+          variant: 'cyan'
+        },
+        {
+          label: 'macOS Installer (.dmg)',
+          url: 'https://github.com/pabeledp/FEPlayer/raw/main/dmg_output/FEPlayer-macOS.dmg',
+          icon: 'mac',
+          variant: 'blue'
+        },
+        {
+          label: 'Android Package (.apk)',
+          url: 'https://github.com/pabeledp/FEPlayer/raw/main/apk_output/FEPlayer-Android.apk',
+          icon: 'android',
+          variant: 'purple'
+        }
+      ]
+    },
+    {
+      id: 'mess-manager',
+      title: 'MessManager Pro',
+      category: 'mobile',
+      badgeText: 'ANDROID APP • FINANCIAL MANAGEMENT',
+      badgeColor: 'border-emerald-500/40 text-emerald-300 bg-emerald-950/60',
+      logo: '/mess_manager_logo.png',
+      tagline: 'Smart Hostel Expense Tracker, Meal Rate Auditor & Balance Splitter',
+      description: 'All-in-one financial management system built for hostels, mess rooms, and shared living spaces. Features real-time meal rate calculations, daily expense auditing, and member balance splitters.',
+      platforms: ['Android APK'],
+      features: [
+        'Real-Time Daily Meal Rate & Cost Audit',
+        'Automatic Member Expense Splitter',
+        'Hostel Balance Audit & Detailed PDF Reports',
+        'Offline Mode & Instant Cloud Sync'
+      ],
+      downloads: [
+        {
+          label: 'Download Android APK',
+          url: 'https://github.com/pabeledp/MessManagerPro/raw/main/build_output/MessManager-PRO.apk',
+          icon: 'android',
+          variant: 'emerald'
+        }
+      ]
+    },
+    {
+      id: 'tictactoe-genz',
+      title: 'Tic Tac Toe: GenZ Multiplayer',
+      category: 'games',
+      badgeText: 'ANDROID GAME • EDP UNIVERSE',
+      badgeColor: 'border-amber-500/40 text-amber-300 bg-amber-950/60',
+      logo: '/tictactoe_game_icon.png',
+      tagline: 'Arcade Mobile Game & 100 Feni Villages Campaign Map',
+      description: 'GenZ Arcade mobile game featuring real-time multiplayer lobbies, dynamic 3x3 to 12x12 custom grid engines, arcade avatar unlocks, and an interactive 100 Feni Villages campaign mode against Minimax AI.',
+      platforms: ['Android APK', 'WebGL Web'],
+      features: [
+        'Unbeatable Minimax AI Engine (3x3 to 12x12 Grids)',
+        '100 Authentic Feni Villages Campaign Map',
+        'Arcade Avatars (Tiger, Robot, Alien, Dragon)',
+        'Haptic Audio FX & Real-time Multiplayer'
+      ],
+      downloads: [
+        {
+          label: 'Download Game APK (v1.0.1)',
+          url: 'https://github.com/pabeldev/feni-brain-arcade/raw/main/TicTacToe-GenZ-Multiplayer-v1.0.1.apk',
+          icon: 'android',
+          variant: 'amber'
+        },
+        {
+          label: 'View GitHub Repository',
+          url: 'https://github.com/pabeldev/feni-brain-arcade',
+          icon: 'github',
+          variant: 'slate'
+        }
+      ]
+    }
+  ];
+
+  const filteredApps = activeCategory === 'all' 
+    ? developerApps 
+    : developerApps.filter(app => app.category === activeCategory || (activeCategory === 'desktop' && app.platforms.includes('Windows')));
 
   const gameScreenshots = [
     {
@@ -69,25 +145,14 @@ export default function TicTacToeGamePage({ onBackToHome, onOpenEstimator }) {
     }
   ];
 
-  const apkDownloadUrl = 'https://github.com/pabeldev/feni-brain-arcade/raw/main/TicTacToe-GenZ-Multiplayer-v1.0.1.apk';
-  const githubRepoUrl = 'https://github.com/pabeldev/feni-brain-arcade';
-
-  const handleShare = () => {
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(window.location.href);
-      setCopiedLink(true);
-      setTimeout(() => setCopiedLink(false), 2500);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-[#060813] text-slate-100 font-sans selection:bg-cyan-500 selection:text-black">
       
-      {/* Top Floating Navbar (Features official FramEmpire logo / brand name) */}
+      {/* Top Floating Glassmorphism Navbar */}
       <nav className="fixed top-2 sm:top-3 left-0 right-0 z-50 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto bg-[#070913]/90 backdrop-blur-2xl border border-cyan-500/30 rounded-full px-4 sm:px-6 py-2 sm:py-2.5 flex items-center justify-between shadow-[0_0_30px_rgba(0,0,0,0.85)]">
           
-          {/* FramEmpire Brand Name Logo (Navigates to main page on click) */}
+          {/* FramEmpire Brand Logo */}
           <div
             onClick={onBackToHome}
             className="flex items-center gap-2 cursor-pointer group"
@@ -97,311 +162,289 @@ export default function TicTacToeGamePage({ onBackToHome, onOpenEstimator }) {
               alt="FramEmpire Studio" 
               className="h-8 sm:h-10 object-contain drop-shadow-[0_0_12px_rgba(0,243,255,0.4)] group-hover:opacity-90 transition-opacity" 
             />
+            <span className="hidden sm:inline-block text-[10px] font-bold text-cyan-400 border border-cyan-500/40 px-2.5 py-0.5 rounded-full bg-cyan-950/60 font-mono">
+              DEVELOPER HUB
+            </span>
           </div>
 
-          {/* Right Controls */}
-          <div className="flex items-center gap-2.5 sm:gap-3">
-            <span className="hidden sm:inline-flex items-center gap-1.5 bg-slate-900/90 text-yellow-400 border border-yellow-500/30 px-3 py-1 rounded-full text-xs font-bold">
-              <Gamepad2 className="w-3.5 h-3.5" />
-              <span>EDP UNIVERSE</span>
-            </span>
-
-            <a
-              href={apkDownloadUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="neon-button-primary text-xs py-1.5 px-4 shadow-[0_0_15px_rgba(0,243,255,0.3)]"
+          {/* Controls & Nav Buttons */}
+          <div className="flex items-center gap-2.5">
+            <button
+              onClick={handleShare}
+              className="bg-slate-900/90 hover:bg-cyan-950 text-slate-300 hover:text-cyan-300 border border-slate-800 hover:border-cyan-500/40 py-1.5 px-3 rounded-full text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+              title="Share Developer Apps Link"
             >
-              <Download className="w-3.5 h-3.5" />
-              <span>Download</span>
-            </a>
+              {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Share2 className="w-3.5 h-3.5 text-cyan-400" />}
+              <span className="hidden xs:inline">{copiedLink ? 'Link Copied!' : 'Share Page'}</span>
+            </button>
+
+            <button
+              onClick={onBackToHome}
+              className="bg-cyan-950/80 hover:bg-cyan-900/90 text-cyan-300 hover:text-white border border-cyan-500/40 py-1.5 px-4 text-xs font-bold rounded-full shadow-[0_0_15px_rgba(0,243,255,0.2)] transition-all flex items-center gap-1.5 cursor-pointer"
+            >
+              <ChevronLeft className="w-4 h-4 text-cyan-400" />
+              <span>Back to Studio</span>
+            </button>
           </div>
 
         </div>
       </nav>
 
-      {/* Main Page Content */}
-      <main className="pt-24 sm:pt-28 pb-16 px-4 sm:px-6 lg:px-8 space-y-12 sm:space-y-16">
-        
-        {/* Play Store Master Header Section */}
-        <section className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-2">
-          
-          {/* Left Side: 3D Game Icon */}
-          <div className="lg:col-span-4 flex justify-center lg:justify-start">
-            <div className="relative group max-w-[200px] sm:max-w-[240px] lg:max-w-[270px] w-full">
-              
-              {/* Outer Amber/Cyan Glow Aura */}
-              <div className="absolute -inset-1 rounded-[36px] bg-gradient-to-r from-amber-500 via-yellow-500 to-cyan-500 opacity-75 blur-xl group-hover:opacity-100 transition-opacity duration-500 animate-pulse" />
+      {/* Hero Header Section */}
+      <header className="relative pt-28 sm:pt-36 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8 border-b border-cyan-500/20 overflow-hidden bg-gradient-to-b from-[#090d1f] via-[#060813] to-[#060813]">
+        <div className="glow-orb-cyan top-10 -left-20 animate-pulse-glow" />
+        <div className="glow-orb-blue top-20 -right-20 animate-pulse-glow" style={{ animationDelay: '2s' }} />
 
-              {/* Game Icon Box */}
-              <div className="relative rounded-[30px] overflow-hidden bg-slate-950/90 border-4 border-amber-400/90 shadow-[0_0_35px_rgba(234,179,8,0.5)] aspect-square p-2.5 flex items-center justify-center">
-                <img
-                  src="/tictactoe_game_icon.png"
-                  alt="Tic Tac Toe GenZ Multiplayer Official Game Icon"
-                  className="w-full h-full object-contain rounded-[22px] drop-shadow-2xl group-hover:scale-105 transition-transform duration-500"
-                />
-              </div>
-
-            </div>
+        <div className="max-w-7xl mx-auto space-y-6 text-center relative z-10">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-950/80 border border-cyan-500/50 text-cyan-300 text-xs font-bold shadow-[0_0_20px_rgba(0,243,255,0.2)]">
+            <Cpu className="w-4 h-4 text-cyan-400 animate-pulse" />
+            <span>FRAMEMPIRE DEVELOPER HUB & SOFTWARE SUITE</span>
           </div>
 
-          {/* Right Side: Title, Ratings, Developer, CTAs */}
-          <div className="lg:col-span-8 space-y-4 text-left">
-            
-            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500/20 via-yellow-500/20 to-cyan-500/20 border border-yellow-500/40 px-3.5 py-1 rounded-full shadow-[0_0_15px_rgba(234,179,8,0.2)]">
-              <Gamepad2 className="w-3.5 h-3.5 text-yellow-400 animate-bounce" />
-              <span className="text-[11px] font-bold text-yellow-300 tracking-wider uppercase">
-                OFFICIAL GAME LANDING PAGE • EDP UNIVERSE
-              </span>
-            </div>
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white font-['Creato_Display'] tracking-tight leading-tight max-w-4xl mx-auto">
+            Engineered Software, <span className="text-gradient">Mobile Apps & Arcade Games</span>
+          </h1>
 
-            <div>
-              <h1 className="font-['Creato_Display'] text-3xl sm:text-5xl font-extrabold text-white tracking-tight leading-tight">
-                Tic Tac Toe: <span className="text-gradient">GenZ Multiplayer</span>
-              </h1>
-              
-              <div className="flex flex-wrap items-center gap-2.5 pt-1.5 text-xs sm:text-sm">
-                <span className="text-cyan-300 font-bold">EDP Universe</span>
-                <span className="text-slate-600">•</span>
-                <span className="text-slate-300">Game Development Team</span>
-                <span className="text-slate-600">•</span>
-                <span className="text-amber-400 font-bold flex items-center gap-1">
-                  <Star className="w-4 h-4 fill-amber-400" />
-                  <span>4.9★ (1.2K Reviews)</span>
-                </span>
-              </div>
-            </div>
+          <p className="text-slate-300 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
+            Explore FramEmpire's flagship developer software suite — from high-performance desktop media organizers to smart financial managers and GenZ arcade games.
+          </p>
 
-            <p className="text-slate-300 text-xs sm:text-sm leading-relaxed max-w-2xl">
-              The ultimate GenZ puzzle strategy game! Explore 100 authentic Feni villages, scale from 3x3 up to 12x12 boards, unlock arcade avatars & conquer the Minimax AI engine. Developed by the <strong className="text-cyan-300 font-bold">EDP Universe</strong> team.
-            </p>
-
-            {/* Action Buttons Group */}
-            <div className="flex flex-wrap items-center gap-3 pt-1">
-              <a
-                href={apkDownloadUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-extrabold text-xs sm:text-sm py-3 px-6 rounded-xl flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(16,185,129,0.35)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] transition-all border border-emerald-300"
-              >
-                <Download className="w-4 h-4 fill-current" />
-                <span>Download</span>
-              </a>
-
-              <a
-                href={githubRepoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="neon-button-secondary text-xs py-3 px-4 justify-center"
-              >
-                <Github className="w-4 h-4 text-cyan-400" />
-                <span>GitHub Repository</span>
-              </a>
-
+          {/* Interactive Category Filter Pills */}
+          <div className="pt-4 flex flex-wrap items-center justify-center gap-2.5 sm:gap-3">
+            {[
+              { id: 'all', label: '⚡ All Software & Apps', count: 3 },
+              { id: 'desktop', label: '💻 Desktop Software', count: 1 },
+              { id: 'mobile', label: '📱 Mobile Apps', count: 1 },
+              { id: 'games', label: '🎮 Arcade Games', count: 1 }
+            ].map((tab) => (
               <button
-                onClick={handleShare}
-                className="px-4 py-3 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-cyan-400 transition-colors flex items-center justify-center gap-1.5 text-xs font-bold"
+                key={tab.id}
+                onClick={() => setActiveCategory(tab.id)}
+                className={`py-2 px-4 sm:px-5 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-2 border ${
+                  activeCategory === tab.id
+                    ? 'bg-cyan-500/20 text-cyan-300 border-cyan-400 shadow-[0_0_15px_rgba(0,243,255,0.3)] scale-105'
+                    : 'bg-slate-900/80 text-slate-400 border-slate-800 hover:border-cyan-500/30 hover:text-slate-200'
+                }`}
               >
-                {copiedLink ? <Check className="w-4 h-4 text-green-400" /> : <Share2 className="w-4 h-4 text-cyan-400" />}
-                <span>{copiedLink ? 'Copied!' : 'Share Page'}</span>
+                <span>{tab.label}</span>
+                <span className="text-[10px] bg-slate-950 px-2 py-0.5 rounded-full font-mono text-cyan-400">
+                  {tab.count}
+                </span>
               </button>
-            </div>
-
-            {/* Test Release Notice */}
-            <div className="pt-1">
-              <span className="inline-flex items-center gap-1.5 bg-slate-900/90 border border-yellow-500/30 text-yellow-300 text-[10px] sm:text-[11px] px-3 py-1 rounded-lg font-medium">
-                <ShieldAlert className="w-3.5 h-3.5 text-yellow-400 shrink-0" />
-                <span>🧪 <strong>First Test Release (v1.0.1)</strong>: Uploaded on GitHub by EDP Universe Team (Under Active Construction).</span>
-              </span>
-            </div>
-
+            ))}
           </div>
+        </div>
+      </header>
 
-        </section>
+      {/* Main Apps Grid Showcase */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-16">
+        
+        {/* Apps Cards List */}
+        <div className="space-y-12 sm:space-y-16">
+          {filteredApps.map((app, index) => (
+            <div
+              key={app.id}
+              className="bg-slate-950/80 border border-cyan-500/30 hover:border-cyan-400/60 rounded-3xl p-6 sm:p-8 lg:p-10 shadow-[0_0_35px_rgba(0,0,0,0.8)] backdrop-blur-xl transition-all duration-300 relative overflow-hidden group"
+            >
+              {/* Background Liquid Rim Glow */}
+              <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none group-hover:bg-cyan-500/10 transition-colors" />
 
-        {/* Responsive Gameplay Screenshots Slider (Standard Mobile Dimensions & Desktop Grid) */}
-        <section className="max-w-7xl mx-auto space-y-6 text-left border-t border-slate-800/80 pt-8 sm:pt-10">
-          
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
-            <div>
-              <span className="neon-badge text-[10px]">GAMEPLAY SHOWCASE</span>
-              <h2 className="font-['Creato_Display'] text-xl sm:text-3xl font-extrabold text-white pt-1">
-                Game Screenshots & Mechanics
-              </h2>
-            </div>
-
-            <span className="text-xs text-slate-400">Click any screenshot to expand full preview</span>
-          </div>
-
-          {/* Screenshot Slider / Gallery Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-2">
-            
-            {/* Interactive Standard Phone Slider (Compact Mobile Dimensions) */}
-            <div className="lg:col-span-5 flex flex-col items-center">
-              
-              <div className="relative max-w-[210px] sm:max-w-[240px] md:max-w-[260px] w-full rounded-[32px] p-2.5 bg-gradient-to-b from-yellow-400/40 via-cyan-500/30 to-purple-600/40 shadow-[0_0_35px_rgba(0,243,255,0.25)] border border-cyan-400/50 group">
-                <div className="relative rounded-[26px] overflow-hidden bg-slate-950 aspect-[9/18.5] shadow-xl border-2 border-slate-900">
-                  
-                  {/* Phone Speaker Notch */}
-                  <div className="absolute top-2 left-1/2 -translate-x-1/2 w-16 h-3 bg-slate-950 rounded-b-lg z-20 flex items-center justify-center">
-                    <div className="w-6 h-1 bg-slate-800 rounded-full" />
-                  </div>
-
-                  <img
-                    src={gameScreenshots[activeSlide].url}
-                    alt={gameScreenshots[activeSlide].title}
-                    className="w-full h-full object-cover transition-all duration-500 cursor-pointer"
-                    onClick={() => setLightboxImage(gameScreenshots[activeSlide])}
-                  />
-
-                  {/* Caption Overlay */}
-                  <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950 via-slate-950/90 to-transparent p-3 z-10 space-y-0.5">
-                    <span className="neon-badge text-[8px] border-amber-400 text-amber-300">
-                      {gameScreenshots[activeSlide].badge}
-                    </span>
-                    <h4 className="font-bold text-white text-[11px] font-['Creato_Display']">
-                      {gameScreenshots[activeSlide].title}
-                    </h4>
-                  </div>
-
-                </div>
-              </div>
-
-              {/* Slider Controls */}
-              <div className="flex items-center gap-3 pt-3">
-                <button
-                  onClick={() => setActiveSlide((prev) => (prev - 1 + gameScreenshots.length) % gameScreenshots.length)}
-                  className="p-1.5 rounded-full bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-cyan-400 transition-colors"
-                  aria-label="Previous Screenshot"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                </button>
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
                 
-                <div className="flex items-center gap-1.5">
-                  {gameScreenshots.map((_, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setActiveSlide(idx)}
-                      className={`h-2 rounded-full transition-all ${
-                        activeSlide === idx ? 'w-6 bg-cyan-400' : 'w-2 bg-slate-800'
-                      }`}
-                    />
-                  ))}
+                {/* App Logo Column */}
+                <div className="lg:col-span-4 flex justify-center">
+                  <div className="relative group/logo w-44 sm:w-56 aspect-square">
+                    
+                    {/* Glowing Rim Effect */}
+                    <div className="absolute -inset-1.5 rounded-[32px] bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 opacity-60 blur-xl group-hover/logo:opacity-100 transition-opacity duration-500 animate-pulse" />
+
+                    {/* Logo Box */}
+                    <div className="relative w-full h-full rounded-[28px] bg-slate-950/90 border-2 border-cyan-500/50 p-4 flex items-center justify-center shadow-2xl overflow-hidden">
+                      <img
+                        src={app.logo}
+                        alt={app.title}
+                        className="w-full h-full object-contain drop-shadow-2xl rounded-2xl group-hover/logo:scale-105 transition-transform duration-500"
+                      />
+                    </div>
+
+                  </div>
                 </div>
 
-                <button
-                  onClick={() => setActiveSlide((prev) => (prev + 1) % gameScreenshots.length)}
-                  className="p-1.5 rounded-full bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-cyan-400 transition-colors"
-                  aria-label="Next Screenshot"
-                >
-                  <ChevronRight className="w-4 h-4" />
-                </button>
+                {/* App Details & Downloads Column */}
+                <div className="lg:col-span-8 space-y-5 text-left">
+                  
+                  {/* Badge & Platforms */}
+                  <div className="flex flex-wrap items-center gap-2.5">
+                    <span className={`text-[10px] sm:text-xs font-bold font-mono px-3 py-1 rounded-full border shadow-sm ${app.badgeColor}`}>
+                      {app.badgeText}
+                    </span>
+
+                    <div className="flex items-center gap-1.5 text-xs text-slate-400 font-mono bg-slate-900/90 px-3 py-1 rounded-full border border-slate-800">
+                      <Layers className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>{app.platforms.join(' • ')}</span>
+                    </div>
+                  </div>
+
+                  {/* Title & Tagline */}
+                  <div className="space-y-1.5">
+                    <h2 className="text-2xl sm:text-4xl font-extrabold text-white font-['Creato_Display'] tracking-tight">
+                      {app.title}
+                    </h2>
+                    <p className="text-cyan-300 font-bold text-sm sm:text-base">
+                      {app.tagline}
+                    </p>
+                  </div>
+
+                  {/* Description */}
+                  <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                    {app.description}
+                  </p>
+
+                  {/* Feature Bullets */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                    {app.features.map((feat, idx) => (
+                      <div key={idx} className="flex items-center gap-2 text-xs text-slate-300">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                        <span>{feat}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Download Action Buttons Grid */}
+                  <div className="pt-3 space-y-2">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 font-mono block">
+                      Direct Software & App Downloads:
+                    </span>
+
+                    <div className="flex flex-wrap items-center gap-3">
+                      {app.downloads.map((dl, idx) => (
+                        <a
+                          key={idx}
+                          href={dl.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`py-2.5 px-5 rounded-2xl text-xs font-bold transition-all duration-300 flex items-center gap-2 cursor-pointer shadow-lg hover:scale-105 border ${
+                            dl.variant === 'cyan'
+                              ? 'bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 text-black border-cyan-400 shadow-[0_0_20px_rgba(0,243,255,0.3)]'
+                              : dl.variant === 'blue'
+                              ? 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white border-blue-400 shadow-[0_0_20px_rgba(59,130,246,0.3)]'
+                              : dl.variant === 'purple'
+                              ? 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white border-purple-400 shadow-[0_0_20px_rgba(168,85,247,0.3)]'
+                              : dl.variant === 'emerald'
+                              ? 'bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-black border-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.3)]'
+                              : dl.variant === 'amber'
+                              ? 'bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-black border-yellow-300 shadow-[0_0_20px_rgba(245,158,11,0.3)]'
+                              : 'bg-slate-900 hover:bg-slate-800 text-slate-200 border-slate-700'
+                          }`}
+                        >
+                          <Download className="w-4 h-4" />
+                          <span>{dl.label}</span>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+
+                </div>
+
               </div>
             </div>
+          ))}
+        </div>
 
-            {/* Side-by-side Standard Thumbnail Cards */}
-            <div className="lg:col-span-7 grid grid-cols-3 gap-3 sm:gap-4">
-              {gameScreenshots.map((screen, idx) => (
-                <div
-                  key={idx}
-                  onClick={() => {
-                    setActiveSlide(idx);
-                    setLightboxImage(screen);
-                  }}
-                  className={`relative aspect-[9/18] rounded-2xl overflow-hidden border-2 shadow-lg cursor-pointer group transition-all duration-300 hover:scale-105 bg-slate-950 ${
-                    activeSlide === idx ? 'border-cyan-400 shadow-[0_0_15px_rgba(0,243,255,0.3)]' : 'border-slate-800 hover:border-cyan-500/50'
-                  }`}
-                >
-                  <img src={screen.url} alt={screen.title} className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-2">
-                    <span className="text-[10px] font-bold text-cyan-300 bg-slate-900/90 px-2 py-1 rounded-full border border-cyan-400 text-center">
-                      🔍 Expand
+        {/* Dedicated Section for Tic Tac Toe Screenshots & Gallery */}
+        <section className="bg-gradient-to-br from-cyan-950/40 via-[#090d1a] to-[#060813] border border-cyan-500/30 rounded-3xl p-6 sm:p-10 space-y-8 shadow-[0_0_40px_rgba(0,243,255,0.1)]">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-800 pb-6">
+            <div>
+              <div className="inline-flex items-center gap-2 text-yellow-400 text-xs font-bold uppercase tracking-wider font-mono">
+                <Gamepad2 className="w-4 h-4" />
+                <span>FEATURED GAME PREVIEW • EDP UNIVERSE</span>
+              </div>
+              <h3 className="text-2xl sm:text-3xl font-extrabold text-white font-['Creato_Display'] mt-1">
+                Tic Tac Toe: GenZ Gameplay & 100 Feni Villages Map
+              </h3>
+            </div>
+
+            <a
+              href="https://github.com/pabeldev/feni-brain-arcade/raw/main/TicTacToe-GenZ-Multiplayer-v1.0.1.apk"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs py-2.5 px-5 rounded-full shadow-[0_0_15px_rgba(245,158,11,0.3)] transition-all flex items-center gap-2 cursor-pointer"
+            >
+              <Download className="w-4 h-4" />
+              <span>Download Game APK v1.0.1</span>
+            </a>
+          </div>
+
+          {/* Screenshots Gallery Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {gameScreenshots.map((item, index) => (
+              <div
+                key={index}
+                onClick={() => setLightboxImage(item)}
+                className="bg-slate-950/90 rounded-2xl border border-slate-800 hover:border-cyan-500/50 p-4 space-y-3 cursor-pointer group hover:scale-[1.02] transition-all duration-300"
+              >
+                <div className="aspect-[9/16] rounded-xl overflow-hidden bg-black/60 relative border border-slate-800">
+                  <img
+                    src={item.url}
+                    alt={item.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+                    <span className="text-xs text-cyan-300 font-bold flex items-center gap-1">
+                      <Zap className="w-3.5 h-3.5 text-cyan-400" /> Click to inspect full image
                     </span>
                   </div>
                 </div>
-              ))}
-            </div>
 
+                <div className="space-y-1 text-left">
+                  <span className="text-[10px] font-bold font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded-full">
+                    {item.badge}
+                  </span>
+                  <h4 className="font-bold text-white text-sm pt-1">{item.title}</h4>
+                  <p className="text-xs text-slate-400">{item.subtitle}</p>
+                </div>
+              </div>
+            ))}
           </div>
-
-        </section>
-
-        {/* Detailed Game Features & Mechanics Grid */}
-        <section className="max-w-7xl mx-auto space-y-6 text-left border-t border-slate-800/80 pt-8 sm:pt-10">
-          <div>
-            <span className="neon-badge text-[10px]">GAME MECHANICS & FEATURES</span>
-            <h2 className="font-['Creato_Display'] text-xl sm:text-3xl font-extrabold text-white pt-1">
-              Everything You Need to Know
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            
-            <div className="neon-card p-4 border-yellow-500/30 space-y-1.5">
-              <div className="w-9 h-9 rounded-xl bg-yellow-500/20 border border-yellow-500/40 flex items-center justify-center text-yellow-400">
-                <MapPin className="w-4 h-4" />
-              </div>
-              <h3 className="font-bold text-white text-sm font-['Creato_Display']">100 Feni Villages Map</h3>
-              <p className="text-slate-300 text-xs leading-relaxed">
-                Explore 100 authentic local villages on an interactive campaign map including Betagaon, Madhuai, Sundarpur & Maruar Char.
-              </p>
-            </div>
-
-            <div className="neon-card p-4 border-cyan-500/30 space-y-1.5">
-              <div className="w-9 h-9 rounded-xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400">
-                <Cpu className="w-4 h-4" />
-              </div>
-              <h3 className="font-bold text-white text-sm font-['Creato_Display']">3x3 to 12x12 Boards</h3>
-              <p className="text-slate-300 text-xs leading-relaxed">
-                Scale board sizes dynamically from standard 3x3 up to massive 12x12 grid battlegrounds against unbeatable Minimax AI.
-              </p>
-            </div>
-
-            <div className="neon-card p-4 border-purple-500/30 space-y-1.5">
-              <div className="w-9 h-9 rounded-xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-400">
-                <UserCheck className="w-4 h-4" />
-              </div>
-              <h3 className="font-bold text-white text-sm font-['Creato_Display']">Profile Hub & Avatars</h3>
-              <p className="text-slate-300 text-xs leading-relaxed">
-                Unlock arcade avatars (Tiger, Robot, Alien, Dragon), track win rates, total matches & customize audio settings.
-              </p>
-            </div>
-
-            <div className="neon-card p-4 border-blue-500/30 space-y-1.5">
-              <div className="w-9 h-9 rounded-xl bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400">
-                <Award className="w-4 h-4" />
-              </div>
-              <h3 className="font-bold text-white text-sm font-['Creato_Display']">EDP Universe Team</h3>
-              <p className="text-slate-300 text-xs leading-relaxed">
-                Engineered by EDP Universe Game Development Team as a premier GenZ multiplayer puzzle experience.
-              </p>
-            </div>
-
-          </div>
-
         </section>
 
       </main>
 
-      {/* Lightbox Modal */}
+      {/* Image Lightbox Modal */}
       {lightboxImage && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-fadeIn">
-          <div className="relative max-w-xs w-full bg-slate-950 rounded-3xl p-2 border border-cyan-400/50 shadow-2xl">
+        <div
+          onClick={() => setLightboxImage(null)}
+          className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-4 cursor-pointer animate-fadeIn"
+        >
+          <div 
+            onClick={(e) => e.stopPropagation()}
+            className="max-w-md w-full bg-[#070913] border border-cyan-500/40 rounded-3xl p-4 space-y-4 shadow-[0_0_50px_rgba(0,243,255,0.3)] relative"
+          >
             <button
               onClick={() => setLightboxImage(null)}
-              className="absolute -top-3 -right-3 p-2 rounded-full bg-cyan-500 text-black font-bold shadow-lg hover:scale-110 transition-transform z-10"
-              aria-label="Close Lightbox"
+              className="absolute top-3 right-3 w-8 h-8 rounded-full bg-slate-900 text-slate-300 hover:text-white flex items-center justify-center border border-slate-700"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4" />
             </button>
-            <img src={lightboxImage.url} alt={lightboxImage.title} className="w-full h-auto rounded-2xl max-h-[80vh] object-contain" />
+
+            <img
+              src={lightboxImage.url}
+              alt={lightboxImage.title}
+              className="w-full rounded-2xl border border-slate-800 object-contain max-h-[70vh]"
+            />
+
+            <div className="text-left space-y-1 px-1">
+              <h3 className="font-bold text-white text-base">{lightboxImage.title}</h3>
+              <p className="text-xs text-slate-300">{lightboxImage.subtitle}</p>
+            </div>
           </div>
         </div>
       )}
 
       {/* Footer */}
-      <Footer onOpenEstimator={onOpenEstimator} />
-
+      <Footer 
+        onOpenEstimator={onOpenEstimator}
+      />
     </div>
   );
 }

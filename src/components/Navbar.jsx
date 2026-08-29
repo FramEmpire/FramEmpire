@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Sparkles, ShieldCheck, LogOut, Lock, Menu, X, ArrowRight, Calculator, Gamepad2 } from 'lucide-react';
+import { Sparkles, ShieldCheck, LogOut, Lock, Menu, X, ArrowRight, Calculator, Gamepad2, Cpu, Smartphone, Layers } from 'lucide-react';
 import { AGENCY_INFO } from '../data/creativeData';
 
 export default function Navbar({ 
@@ -71,16 +71,17 @@ export default function Navbar({
               </nav>
 
               <div className="hidden sm:flex items-center gap-2.5 sm:gap-3">
-                {/* Tic Tac Toe Button (2nd to last position before Project Estimator) */}
+                {/* FE Apps Developer Hub Button */}
                 <button
                   onClick={onOpenGamePage}
-                  className="bg-gradient-to-r from-amber-500/20 to-yellow-500/20 hover:from-amber-500/30 hover:to-yellow-500/30 text-yellow-300 border border-yellow-500/40 py-1.5 sm:py-2 px-3.5 text-xs font-bold rounded-full shadow-[0_0_12px_rgba(234,179,8,0.2)] transition-all flex items-center gap-1.5 cursor-pointer"
+                  className="bg-gradient-to-r from-cyan-500/20 via-blue-500/20 to-purple-500/20 hover:from-cyan-500/30 hover:to-purple-500/30 text-cyan-300 hover:text-white border border-cyan-500/40 hover:border-cyan-400 py-1.5 sm:py-2 px-4 text-xs font-bold rounded-full shadow-[0_0_15px_rgba(0,243,255,0.2)] hover:shadow-[0_0_20px_rgba(0,243,255,0.4)] transition-all flex items-center gap-1.5 cursor-pointer hover:scale-105"
                 >
-                  <Gamepad2 className="w-3.5 h-3.5 text-yellow-400 animate-pulse" />
-                  <span>🎮 Tic Tac Toe</span>
+                  <Cpu className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
+                  <span>🚀 FE Apps</span>
+                  <span className="text-[9px] bg-cyan-950 border border-cyan-500/40 px-1.5 py-0.2 rounded-full text-cyan-400 font-mono ml-0.5">DEV</span>
                 </button>
 
-                {/* Project Estimator Button (Last Position) */}
+                {/* Project Estimator Button */}
                 <button
                   onClick={onOpenEstimator}
                   className="neon-button-secondary py-2 px-4 text-xs rounded-full shadow-[0_0_15px_rgba(0,243,255,0.25)]"
@@ -140,31 +141,44 @@ export default function Navbar({
                 setMobileMenuOpen(false);
                 onOpenGamePage();
               }}
-              className="p-3 rounded-xl bg-yellow-500/10 border border-yellow-500/40 text-yellow-300 font-bold text-left flex items-center justify-between"
+              className="p-3.5 rounded-2xl bg-gradient-to-r from-cyan-950/80 to-purple-950/80 border border-cyan-500/40 text-cyan-300 font-bold text-left flex items-center justify-between shadow-[0_0_15px_rgba(0,243,255,0.2)]"
             >
-              <span>🎮 Tic Tac Toe: GenZ Game</span>
-              <ArrowRight className="w-4 h-4" />
+              <div className="flex items-center gap-2.5">
+                <Cpu className="w-5 h-5 text-cyan-400 animate-pulse" />
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-white font-extrabold">🚀 FE Apps</span>
+                    <span className="text-[9px] bg-cyan-950 border border-cyan-500/50 text-cyan-400 px-1.5 py-0.2 rounded-full">DEV HUB</span>
+                  </div>
+                  <span className="text-[11px] text-slate-400 font-normal block">Software, Mobile Apps & Arcade Games</span>
+                </div>
+              </div>
+              <ArrowRight className="w-4 h-4 text-cyan-400" />
             </button>
+
             <a 
               href="#services" 
               onClick={() => setMobileMenuOpen(false)}
-              className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-cyan-500/40 hover:text-cyan-300"
+              className="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-cyan-500/40 hover:text-cyan-300 transition-all flex items-center justify-between"
             >
-              🚀 Creative Services
+              <span>🚀 Creative Services</span>
+              <ArrowRight className="w-3.5 h-3.5 text-slate-500" />
             </a>
             <a 
               href="#portfolio" 
               onClick={() => setMobileMenuOpen(false)}
-              className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-cyan-500/40 hover:text-cyan-300"
+              className="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-cyan-500/40 hover:text-cyan-300 transition-all flex items-center justify-between"
             >
-              🎬 Showcase & Portfolio
+              <span>🎬 Showcase & Portfolio</span>
+              <ArrowRight className="w-3.5 h-3.5 text-slate-500" />
             </a>
             <a 
               href="#about" 
               onClick={() => setMobileMenuOpen(false)}
-              className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-cyan-500/40 hover:text-cyan-300"
+              className="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-cyan-500/40 hover:text-cyan-300 transition-all flex items-center justify-between"
             >
-              🔥 About FramEmpire
+              <span>🔥 About FramEmpire</span>
+              <ArrowRight className="w-3.5 h-3.5 text-slate-500" />
             </a>
           </nav>
 
