@@ -65,12 +65,18 @@ export default function App() {
         setLoginModalOpen(true);
       } else if (checkPathIsFeat(path, hash)) {
         setViewMode('tictactoe');
+        // Force URL bar rewrite from /tictactoe to /feat
+        if (window.location.pathname !== '/feat') {
+          window.history.replaceState(null, '', '/feat');
+        }
       } else if (checkPathIsPrivacy(path, hash)) {
         setViewMode('privacy-policy');
       } else {
         setViewMode('public');
       }
     };
+
+    checkRoute();
 
     window.addEventListener('popstate', checkRoute);
     return () => window.removeEventListener('popstate', checkRoute);
@@ -79,21 +85,19 @@ export default function App() {
   // Update URL Bar when switching viewMode
   useEffect(() => {
     if (viewMode === 'admin') {
-      if (!checkPathIsAdmin(window.location.pathname, window.location.hash)) {
+      if (window.location.pathname !== '/admin') {
         window.history.pushState(null, '', '/admin');
       }
     } else if (viewMode === 'tictactoe') {
-      if (!checkPathIsFeat(window.location.pathname, window.location.hash)) {
+      if (window.location.pathname !== '/feat') {
         window.history.pushState(null, '', '/feat');
       }
     } else if (viewMode === 'privacy-policy') {
-      if (!checkPathIsPrivacy(window.location.pathname, window.location.hash)) {
+      if (window.location.pathname !== '/privacy-policy') {
         window.history.pushState(null, '', '/privacy-policy');
       }
     } else {
-      if (checkPathIsAdmin(window.location.pathname, window.location.hash) || 
-          checkPathIsFeat(window.location.pathname, window.location.hash) || 
-          checkPathIsPrivacy(window.location.pathname, window.location.hash)) {
+      if (window.location.pathname !== '/') {
         window.history.pushState(null, '', '/');
       }
     }
@@ -125,7 +129,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-[#070913] text-slate-100 font-sans selection:bg-cyan-500 selection:text-black relative">
       
-      {/* Sticky Glassmorphism Header Navbar (Hidden on dedicated /tictactoe & /privacy-policy pages) */}
+      {/* Sticky Glassmorphism Header Navbar (Hidden on dedicated /feat & /privacy-policy pages) */}
       {viewMode !== 'tictactoe' && viewMode !== 'privacy-policy' && (
         <Navbar 
           viewMode={viewMode}

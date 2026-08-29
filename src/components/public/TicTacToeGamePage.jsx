@@ -1,26 +1,136 @@
-import React, { useState, useEffect } from 'react';
-import { Download, Github, Gamepad2, Star, ShieldAlert, MapPin, Cpu, UserCheck, Award, X, Sparkles, ChevronLeft, ChevronRight, Share2, Check, Smartphone, Monitor, Layers, ArrowRight, ExternalLink, Zap, CheckCircle2, ShieldCheck, Filter, Terminal, Play, RefreshCw, Activity, Code2, Bot } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Download, Github, Gamepad2, Star, ShieldAlert, MapPin, Cpu, UserCheck, Award, X, Sparkles, ChevronLeft, ChevronRight, Share2, Check, Smartphone, Monitor, Layers, ArrowRight, ExternalLink, Zap, CheckCircle2, ShieldCheck, Filter, Terminal, Play, RefreshCw, Activity, Code2, Bot, Copy, CheckSquare, Settings2, Sliders, Server, HardDrive } from 'lucide-react';
 import Footer from './Footer';
 
 export default function TicTacToeGamePage({ onBackToHome, onOpenEstimator }) {
   const [activeCategory, setActiveCategory] = useState('all');
   const [copiedLink, setCopiedLink] = useState(false);
+  const [codeCopied, setCodeCopied] = useState(false);
   
-  // FEAT Live AI Engine State
-  const [aiPreset, setAiPreset] = useState('minimax');
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [terminalLogs, setTerminalLogs] = useState([
-    '[FEAT AI] Neural Engine v4.2 Initialized.',
-    '[FEAT AI] Status: ONLINE • Active Tensor Cores: 64 • Latency: 3.8ms',
-    '[FEAT AI] Select an algorithm below to test live execution...'
-  ]);
-  const [executionProgress, setExecutionProgress] = useState(100);
+  // FEAT Live AI Neural Code Engine State
+  const [activePreset, setActivePreset] = useState('minimax');
+  const [isTyping, setIsTyping] = useState(false);
+  const [displayedCodeIndex, setDisplayedCodeIndex] = useState(0);
+  const [executionLogs, setExecutionLogs] = useState([]);
+  const [executionMetrics, setExecutionMetrics] = useState({
+    fps: 120.0,
+    latencyMs: 3.8,
+    tensorThreads: 64,
+    vramGb: 192,
+    confidence: '99.9%'
+  });
+
+  // Interactive Live Sliders Parameters
+  const [paramDepth, setParamDepth] = useState(12);
+  const [paramGpuNodes, setParamGpuNodes] = useState(24);
+  const [paramBazaarExpense, setParamBazaarExpense] = useState(18500);
+
+  const codeSnippets = {
+    minimax: {
+      fileName: 'MinimaxAI.ts',
+      language: 'TypeScript',
+      badge: 'GAME AI • 100 FENI VILLAGES MAP',
+      code: `import { FEATNeuralEngine, VillageMapNode } from '@feat/core';
+
+export async function evalMinimaxDepth(
+  gridState: number[][],
+  depth: number = ${paramDepth},
+  alpha: number = -Infinity,
+  beta: number = Infinity
+): Promise<{ score: number; bestMove: [number, number] }> {
+  // FEAT Alpha-Beta Pruning Algorithm for 100 Feni Villages Grid
+  const validMoves = FEATNeuralEngine.extractLegalMoves(gridState);
+  let bestScore = -Infinity;
+  let optimalMove: [number, number] = [0, 0];
+
+  for (const [r, c] of validMoves) {
+    const projectedState = FEATNeuralEngine.simulateMove(gridState, r, c);
+    const score = await FEATNeuralEngine.evaluateVillageNode(projectedState, depth - 1, alpha, beta);
+    if (score > bestScore) {
+      bestScore = score;
+      optimalMove = [r, c];
+    }
+    alpha = Math.max(alpha, bestScore);
+    if (beta <= alpha) break; // Alpha-Beta Cutoff
+  }
+
+  return { score: bestScore, bestMove: optimalMove };
+}`
+    },
+    octane: {
+      fileName: 'OctaneMeshRender.py',
+      language: 'Python 3.11',
+      badge: '3D RAY TRACING • OCTANE CLUSTER',
+      code: `from feat.ai import OctaneCluster, TensorMesh, RayTracer
+
+async def render_octane_3d_mesh(scene_id: str = "framempire_3d", target_fps: int = 120):
+    """FEAT Octane 3D Render Cluster AI Acceleration Pass"""
+    cluster = OctaneCluster.connect(nodes=${paramGpuNodes}, vram_gb=192)
+    mesh = TensorMesh.load_geometry(scene_id)
+    
+    # AI Ray-Tracing Light Bounces & Denoising Matrix
+    bounces = cluster.compute_light_bounces(mesh, samples_per_pixel=1024)
+    denoised_frame = RayTracer.apply_ai_denoise(bounces, engine="FEAT-TensorV4")
+    
+    status = await cluster.verify_fps_target(denoised_frame, min_fps=target_fps)
+    return {"status": "SUCCESS", "resolution": "4K_ULTRA", "fps": status.measured_fps}`
+    },
+    messmanager: {
+      fileName: 'MessManagerAudit.ts',
+      language: 'TypeScript',
+      badge: 'FINANCIAL AUDIT • MESSMANAGER PRO',
+      code: `import { FEATAuditMatrix, HostelMemberLedger } from '@feat/finances';
+
+export function calculateMessMealRateAudit(
+  totalBazaarExpense: number = ${paramBazaarExpense},
+  totalMealsConsumed: number = 425,
+  members: HostelMemberLedger[] = []
+): { mealRate: number; status: string } {
+  // FEAT Automated Meal Rate Calculation & Audit Algorithm
+  const calculatedMealRate = totalBazaarExpense / Math.max(1, totalMealsConsumed);
+  
+  // Real-time Balance Split Integrity Verification
+  const isAuditValid = FEATAuditMatrix.verifyLedgerZeroSum(members, calculatedMealRate);
+  
+  return { 
+    mealRate: Number(calculatedMealRate.toFixed(2)), 
+    status: isAuditValid ? "AUDIT_VERIFIED_100%" : "DISCREPANCY_FLAGGED" 
+  };
+}`
+    },
+    feplayer: {
+      fileName: 'FEPlayerDSPStream.cpp',
+      language: 'C++20 SIMD',
+      badge: 'HARDWARE DSP • FEPLAYER ENGINE',
+      code: `#include <feat/feplayer/hardware_dsp.hpp>
+#include <feat/feplayer/audio_spatial.hpp>
+
+namespace FEAT::AudioEngine {
+    FE_INLINE Result<DSPStreamState> Process8KHardwareAudio(const AudioBuffer& rawBuffer) {
+        // FEAT Hardware-Accelerated DSP Filter Matrix for FEPlayer
+        auto dspContext = HardwareDSP::CreateContext(CodecType::AV1_8K_HIGH);
+        dspContext.ApplySpatializationFilter(AudioSpatial::SURROUND_7_1_4);
+        dspContext.EnableLowLatencyBuffer(3.8 /* ms */);
+
+        if (!dspContext.VerifyHardwareDecode()) {
+            return Result<DSPStreamState>::Error("Hardware Decode Fallback Active");
+        }
+
+        return Result<DSPStreamState>::Ok(dspContext.GetActiveStreamState());
+    }
+}`
+    }
+  };
+
+  const currentSnippet = codeSnippets[activePreset];
 
   useEffect(() => {
     try {
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      document.title = "FEAT — FramEmpire Advance Technologies | Developer Apps & AI Engine";
+      document.title = "FEAT — FramEmpire Advance Technologies | Software & AI IDE Sandbox";
     } catch (e) {}
+
+    runLiveCodeSynthesis(activePreset);
   }, []);
 
   const handleShare = () => {
@@ -31,59 +141,113 @@ export default function TicTacToeGamePage({ onBackToHome, onOpenEstimator }) {
     }
   };
 
-  // Live Interactive AI Algorithm Tester
-  const runAiSimulation = (presetId) => {
-    setAiPreset(presetId);
-    setIsProcessing(true);
-    setExecutionProgress(15);
+  const handleCopyCode = () => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(currentSnippet.code);
+      setCodeCopied(true);
+      setTimeout(() => setCodeCopied(false), 2000);
+    }
+  };
 
+  // Live Real-Time Code Synthesis & Terminal Output Execution Simulation
+  const runLiveCodeSynthesis = (presetKey) => {
+    setActivePreset(presetKey);
+    setIsTyping(true);
+    setDisplayedCodeIndex(0);
+
+    const fullText = codeSnippets[presetKey].code;
+    const textLength = fullText.length;
+    
+    // Live Terminal Log Stream Setup
     let logs = [];
-    if (presetId === 'minimax') {
+    const timestamp = new Date().toLocaleTimeString('en-US', { hour12: false });
+
+    if (presetKey === 'minimax') {
       logs = [
-        '[FEAT-AI Engine] Initializing Minimax Depth-First Search for 12x12 TicTacToe Grid...',
-        '[FEAT-AI Engine] Evaluating 100 Feni Villages Map State (Village: Betagaon)...',
-        '[FEAT-AI Engine] Pruning 48,290 sub-trees using Alpha-Beta Optimization...',
-        '[FEAT-AI Engine] Optimal Next Move Calculated: Grid [X: 7, Y: 4] • Confidence: 99.8%',
-        '[FEAT-AI Engine] Simulation Execution Completed in 4.2ms ✅'
+        `[FEAT-IDE ${timestamp}] Compiling MinimaxAI.ts via V8 JIT + WebAssembly SIMD...`,
+        `[FEAT-IDE ${timestamp}] Evaluating 100 Feni Villages Map Node (Betagaon / Depth: ${paramDepth})...`,
+        `[FEAT-IDE ${timestamp}] Alpha-Beta Pruning: 54,210 dead branches eliminated in 2.1ms`,
+        `[FEAT-IDE ${timestamp}] >> SUCCESS: Next Optimal Move: Grid [Row: 4, Col: 7] (Confidence: 99.92%)`
       ];
-    } else if (presetId === 'octane') {
+      setExecutionMetrics({ fps: 120.0, latencyMs: 3.8, tensorThreads: 64, vramGb: 192, confidence: '99.92%' });
+    } else if (presetKey === 'octane') {
       logs = [
-        '[FEAT-AI Engine] Connecting to Octane 3D Render Cluster (24 Active GPU Nodes)...',
-        '[FEAT-AI Engine] Synthesizing Glassmorphism Ray-Tracing Light Bounces...',
-        '[FEAT-AI Engine] AI Denoising Pass 1/16 Complete • 120 FPS Target Met',
-        '[FEAT-AI Engine] 3D Mesh Topology Rendered & Cached to VRAM • 4K Resolution OK',
-        '[FEAT-AI Engine] Octane AI Frame Render Completed in 14.1ms ✅'
+        `[FEAT-IDE ${timestamp}] Initializing PyOctane Cluster across ${paramGpuNodes} Active GPU Nodes...`,
+        `[FEAT-IDE ${timestamp}] Synthesizing Glassmorphism Ray-Tracing Light Bounces (1024 SPP)...`,
+        `[FEAT-IDE ${timestamp}] AI Denoising Pass 16/16 Complete • 120 FPS Target Met`,
+        `[FEAT-IDE ${timestamp}] >> SUCCESS: 4K Ultra Frame Rendered in 14.1ms`
       ];
-    } else if (presetId === 'messmanager') {
+      setExecutionMetrics({ fps: 120.0, latencyMs: 14.1, tensorThreads: 128, vramGb: 192, confidence: '100%' });
+    } else if (presetKey === 'messmanager') {
       logs = [
-        '[FEAT-AI Engine] Ingesting MessManager Pro Ledger Data (30 Members, 450 Meals)...',
-        '[FEAT-AI Engine] Calculating Dynamic Daily Meal Rate Algorithm...',
-        '[FEAT-AI Engine] Auditing Shared Bazaars, Deposits & Individual Member Balances...',
-        '[FEAT-AI Engine] Balance Split Integrity: 100% Valid • Zero Discrepancy Found',
-        '[FEAT-AI Engine] Financial Audit Matrix Generated Successfully ✅'
+        `[FEAT-IDE ${timestamp}] Ingesting MessManager Pro Financial Ledger (Total Bazaar: ৳${paramBazaarExpense})...`,
+        `[FEAT-IDE ${timestamp}] Calculating Dynamic Meal Rate (425 Meals Consumed)...`,
+        `[FEAT-IDE ${timestamp}] Auditing Hostel Deposits, Shared Expenses & Individual Balance Split...`,
+        `[FEAT-IDE ${timestamp}] >> SUCCESS: Meal Rate: ৳${(paramBazaarExpense / 425).toFixed(2)}/meal • Balance Integrity: 100% VERIFIED`
       ];
-    } else if (presetId === 'feplayer') {
+      setExecutionMetrics({ fps: 60.0, latencyMs: 1.2, tensorThreads: 32, vramGb: 64, confidence: '100%' });
+    } else if (presetKey === 'feplayer') {
       logs = [
-        '[FEAT-AI Engine] FE Player Multi-Threaded DSP Engine Initialized...',
-        '[FEAT-AI Engine] Decoding 8K AV1 / H.265 Hardware Video Stream...',
-        '[FEAT-AI Engine] AI Dynamic EQ & Audio Spatialization Filter Applied...',
-        '[FEAT-AI Engine] Buffer Health: 100% • Zero Frame Drops Detected',
-        '[FEAT-AI Engine] Media DSP Streaming Active at 120 Hz ✅'
+        `[FEAT-IDE ${timestamp}] Initializing C++20 Hardware Accelerated DSP Audio Engine...`,
+        `[FEAT-IDE ${timestamp}] Decoding 8K AV1 Stream via Hardware SIMD Accelerators...`,
+        `[FEAT-IDE ${timestamp}] Applying 7.1.4 Surround Sound Spatialization Matrix Filter...`,
+        `[FEAT-IDE ${timestamp}] >> SUCCESS: Ultra-Low Latency Buffer Active at 3.8ms`
       ];
+      setExecutionMetrics({ fps: 120.0, latencyMs: 3.8, tensorThreads: 64, vramGb: 128, confidence: '99.9%' });
     }
 
-    setTerminalLogs(logs.slice(0, 2));
+    setExecutionLogs([logs[0]]);
 
-    setTimeout(() => {
-      setExecutionProgress(65);
-      setTerminalLogs(logs.slice(0, 4));
-    }, 400);
+    let currentIdx = 0;
+    const interval = setInterval(() => {
+      currentIdx += Math.floor(Math.random() * 8) + 6;
+      if (currentIdx >= textLength) {
+        setDisplayedCodeIndex(textLength);
+        setIsTyping(false);
+        setExecutionLogs(logs);
+        clearInterval(interval);
+      } else {
+        setDisplayedCodeIndex(currentIdx);
+        if (currentIdx > textLength * 0.3 && logs[1] && executionLogs.length < 2) {
+          setExecutionLogs(logs.slice(0, 2));
+        } else if (currentIdx > textLength * 0.7 && logs[2] && executionLogs.length < 3) {
+          setExecutionLogs(logs.slice(0, 3));
+        }
+      }
+    }, 25);
+  };
 
-    setTimeout(() => {
-      setExecutionProgress(100);
-      setTerminalLogs(logs);
-      setIsProcessing(false);
-    }, 900);
+  // Rich Syntax Highlighting Engine for Code Display
+  const renderFormattedCode = (rawCodeText) => {
+    const lines = rawCodeText.substring(0, displayedCodeIndex).split('\n');
+    return lines.map((line, lineIdx) => {
+      // Syntax Colorizing Regex Rules
+      let highlightedLine = line
+        // Comments
+        .replace(/(\/\/.*|#.*|\/\*.*\*\/)/g, '<span class="text-[#6272a4] italic font-mono">$1</span>')
+        // Keywords
+        .replace(/\b(import|from|export|function|async|await|return|const|let|var|for|of|if|else|break|def|class|namespace|using|auto|struct)\b/g, '<span class="text-[#ff79c6] font-bold">$1</span>')
+        // Types & Special Identifiers
+        .replace(/\b(number|string|boolean|Promise|void|Map|Array|Result|DSPStreamState|CodecType|AudioBuffer|OctaneCluster|TensorMesh|RayTracer|FEATNeuralEngine|HostelMemberLedger|FEATAuditMatrix)\b/g, '<span class="text-[#89ddff] font-semibold">$1</span>')
+        // Functions
+        .replace(/\b(evalMinimaxDepth|render_octane_3d_mesh|calculateMessMealRateAudit|Process8KHardwareAudio|extractLegalMoves|simulateMove|evaluateVillageNode|connect|compute_light_bounces|apply_ai_denoise|verify_fps_target|verifyLedgerZeroSum|CreateContext|ApplySpatializationFilter|EnableLowLatencyBuffer|VerifyHardwareDecode)\b/g, '<span class="text-[#50fa7b] font-semibold">$1</span>')
+        // Strings
+        .replace(/("[^"]*"|'[^']*'|`[^`]*`)/g, '<span class="text-[#f1fa8c]">$1</span>')
+        // Numbers
+        .replace(/\b(\d+(\.\d+)?)\b/g, '<span class="text-[#bd93f9] font-mono">$1</span>');
+
+      return (
+        <div key={lineIdx} className="table-row leading-relaxed hover:bg-slate-900/60 px-2 py-0.5 rounded transition-colors">
+          <span className="table-cell text-right text-slate-600 font-mono text-xs pr-4 select-none w-8">
+            {lineIdx + 1}
+          </span>
+          <span 
+            className="table-cell font-mono text-xs sm:text-sm text-slate-200 whitespace-pre"
+            dangerouslySetInnerHTML={{ __html: highlightedLine }}
+          />
+        </div>
+      );
+    });
   };
 
   // Official Developer Software Portfolio Data
@@ -217,7 +381,7 @@ export default function TicTacToeGamePage({ onBackToHome, onOpenEstimator }) {
               title="Share FEAT Developer Link"
             >
               {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Share2 className="w-3.5 h-3.5 text-cyan-400" />}
-              <span className="hidden xs:inline">{copiedLink ? 'Link Copied!' : 'Share FEAT Page'}</span>
+              <span className="hidden xs:inline">{copiedLink ? 'Link Copied!' : 'Share /FEAT'}</span>
             </button>
 
             <button
@@ -233,11 +397,11 @@ export default function TicTacToeGamePage({ onBackToHome, onOpenEstimator }) {
       </nav>
 
       {/* Hero Header Section */}
-      <header className="relative pt-28 sm:pt-36 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8 border-b border-cyan-500/20 overflow-hidden bg-gradient-to-b from-[#090d1f] via-[#060813] to-[#060813]">
+      <header className="relative pt-28 sm:pt-36 pb-10 sm:pb-14 px-4 sm:px-6 lg:px-8 border-b border-cyan-500/20 overflow-hidden bg-gradient-to-b from-[#090d1f] via-[#060813] to-[#060813]">
         <div className="glow-orb-cyan top-10 -left-20 animate-pulse-glow" />
         <div className="glow-orb-blue top-20 -right-20 animate-pulse-glow" style={{ animationDelay: '2s' }} />
 
-        <div className="max-w-7xl mx-auto space-y-6 text-center relative z-10">
+        <div className="max-w-7xl mx-auto space-y-5 text-center relative z-10">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-950/80 border border-cyan-500/50 text-cyan-300 text-xs font-bold shadow-[0_0_20px_rgba(0,243,255,0.2)]">
             <Cpu className="w-4 h-4 text-cyan-400 animate-pulse" />
             <span>FEAT • FRAMEMPIRE ADVANCE TECHNOLOGIES</span>
@@ -248,11 +412,11 @@ export default function TicTacToeGamePage({ onBackToHome, onOpenEstimator }) {
           </h1>
 
           <p className="text-slate-300 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
-            Welcome to <strong className="text-white font-['Creato_Display']">FEAT</strong> — the core software engineering, AI algorithms & technology R&D division of FramEmpire Studio. Explore our live software, Android apps, and interactive AI Matrix engine.
+            Welcome to <strong className="text-white font-['Creato_Display']">FEAT</strong> — the core software engineering, AI algorithms & technology R&D division of FramEmpire Studio. Explore our live software, Android apps, and interactive AI Code IDE.
           </p>
 
           {/* Interactive Category Filter Pills */}
-          <div className="pt-4 flex flex-wrap items-center justify-center gap-2.5 sm:gap-3">
+          <div className="pt-3 flex flex-wrap items-center justify-center gap-2.5 sm:gap-3">
             {[
               { id: 'all', label: '⚡ All Software & Apps', count: 3 },
               { id: 'desktop', label: '💻 Desktop Software', count: 1 },
@@ -278,93 +442,203 @@ export default function TicTacToeGamePage({ onBackToHome, onOpenEstimator }) {
         </div>
       </header>
 
-      {/* IMPRESSIVE LIVE AI ENGINE INTERACTIVE SANDBOX SECTION */}
+      {/* ULTRA-IMPRESSIVE LIVE AI CODE IDE SANDBOX SECTION */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div className="bg-gradient-to-br from-cyan-950/50 via-[#090d1a] to-[#060813] border border-cyan-500/40 rounded-3xl p-6 sm:p-10 space-y-6 shadow-[0_0_45px_rgba(0,243,255,0.15)] relative overflow-hidden">
+        <div className="bg-[#030611] border border-cyan-500/40 rounded-3xl p-5 sm:p-8 space-y-6 shadow-[0_0_50px_rgba(0,243,255,0.18)] relative overflow-hidden">
           
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-800 pb-6">
+          {/* Header Bar */}
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-800/90 pb-5">
             <div className="space-y-1">
-              <div className="inline-flex items-center gap-2 text-cyan-400 text-xs font-bold font-mono bg-cyan-950 px-3 py-1 rounded-full border border-cyan-500/40 shadow-sm">
-                <Activity className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
-                <span>FEAT NEURAL MATRIX & AI ENGINE • LIVE BENCHMARK</span>
+              <div className="inline-flex items-center gap-2 text-cyan-400 text-xs font-bold font-mono bg-cyan-950/80 px-3.5 py-1 rounded-full border border-cyan-500/40 shadow-sm">
+                <Code2 className="w-4 h-4 text-cyan-400" />
+                <span>FEAT LIVE AI CODE IDE • NEURAL SYNTHESIS ENGINE</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-extrabold text-white font-['Creato_Display']">
-                Live Interactive AI & Algorithm Engine
+                FEAT Live Interactive AI Code & Matrix Engine
               </h2>
             </div>
 
-            <div className="flex items-center gap-3 font-mono text-xs text-cyan-300 bg-slate-950/80 px-4 py-2 rounded-2xl border border-slate-800">
-              <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
-              <span>Engine Status: <strong>LIVE (64 Tensor Cores)</strong></span>
+            {/* Metrics Live Badge Bar */}
+            <div className="flex flex-wrap items-center gap-3 text-xs font-mono text-slate-300 bg-[#070b19] px-4 py-2.5 rounded-2xl border border-slate-800">
+              <div className="flex items-center gap-1.5 text-emerald-400 font-bold">
+                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                <span>FPS: {executionMetrics.fps}</span>
+              </div>
+              <span className="text-slate-600">•</span>
+              <span>Latency: <strong className="text-cyan-300">{executionMetrics.latencyMs} ms</strong></span>
+              <span className="text-slate-600">•</span>
+              <span>Threads: <strong className="text-purple-300">{executionMetrics.tensorThreads} Tensor Cores</strong></span>
             </div>
           </div>
 
-          <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
-            Test FEAT's live algorithm engines below. Select a neural processing pipeline to observe real-time matrix evaluations and live terminal output:
-          </p>
-
-          {/* Algorithm Selector Buttons */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {[
-              { id: 'minimax', label: '🎮 Minimax AI Tree', icon: Bot, color: 'text-amber-400 border-amber-500/40' },
-              { id: 'octane', label: '🎬 Octane 3D Mesh AI', icon: Cpu, color: 'text-cyan-400 border-cyan-500/40' },
-              { id: 'messmanager', label: '📊 Mess Expense Audit', icon: ShieldCheck, color: 'text-emerald-400 border-emerald-500/40' },
-              { id: 'feplayer', label: '🎧 FEPlayer 8K DSP Stream', icon: Zap, color: 'text-purple-400 border-purple-500/40' }
-            ].map((preset) => {
-              const IconComp = preset.icon;
-              return (
+          {/* Preset Code Tabs & Live Parameter Controls */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
+            
+            {/* Left 8 Cols: File Tabs Selector */}
+            <div className="lg:col-span-8 flex flex-wrap items-center gap-2">
+              {[
+                { id: 'minimax', name: 'MinimaxAI.ts', lang: 'TypeScript' },
+                { id: 'octane', name: 'OctaneMeshRender.py', lang: 'Python' },
+                { id: 'messmanager', name: 'MessManagerAudit.ts', lang: 'TypeScript' },
+                { id: 'feplayer', name: 'FEPlayerDSPStream.cpp', lang: 'C++20' }
+              ].map((tab) => (
                 <button
-                  key={preset.id}
-                  onClick={() => runAiSimulation(preset.id)}
-                  disabled={isProcessing}
-                  className={`p-3.5 rounded-2xl border text-xs font-bold transition-all text-left flex flex-col gap-2 cursor-pointer ${
-                    aiPreset === preset.id
-                      ? 'bg-slate-900 text-white border-cyan-400 shadow-[0_0_15px_rgba(0,243,255,0.25)] scale-[1.02]'
-                      : 'bg-slate-950/80 text-slate-400 border-slate-800 hover:border-cyan-500/30 hover:text-slate-200'
+                  key={tab.id}
+                  onClick={() => runLiveCodeSynthesis(tab.id)}
+                  disabled={isTyping}
+                  className={`py-2 px-4 rounded-xl text-xs font-mono font-bold transition-all flex items-center gap-2 cursor-pointer border ${
+                    activePreset === tab.id
+                      ? 'bg-slate-900 text-cyan-300 border-cyan-400 shadow-[0_0_12px_rgba(0,243,255,0.2)] scale-105'
+                      : 'bg-slate-950/90 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-slate-200'
                   }`}
                 >
-                  <div className="flex items-center justify-between">
-                    <IconComp className={`w-4 h-4 ${preset.color.split(' ')[0]}`} />
-                    {aiPreset === preset.id && <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />}
-                  </div>
-                  <span>{preset.label}</span>
+                  <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                  <span>{tab.name}</span>
+                  <span className="text-[9px] bg-slate-950 px-1.5 py-0.2 rounded text-slate-400">{tab.lang}</span>
                 </button>
-              );
-            })}
-          </div>
-
-          {/* Interactive Live Terminal Console Box */}
-          <div className="bg-[#04060f] rounded-2xl border border-cyan-500/30 p-4 sm:p-6 space-y-3 font-mono text-xs shadow-2xl relative overflow-hidden">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3 text-slate-400">
-              <div className="flex items-center gap-2">
-                <Terminal className="w-4 h-4 text-cyan-400" />
-                <span className="text-cyan-300 font-bold">FEAT-Terminal-v4.2@live-kernel</span>
-              </div>
-              <div className="flex items-center gap-2">
-                {isProcessing && <RefreshCw className="w-3.5 h-3.5 text-cyan-400 animate-spin" />}
-                <span className="text-[11px] text-slate-500">Latency: 3.8ms</span>
-              </div>
-            </div>
-
-            {/* Progress Bar */}
-            <div className="w-full bg-slate-900 rounded-full h-1.5 overflow-hidden">
-              <div 
-                className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 h-full transition-all duration-300"
-                style={{ width: `${executionProgress}%` }}
-              />
-            </div>
-
-            {/* Live Terminal Log Stream Output */}
-            <div className="space-y-1.5 min-h-[120px] text-slate-200 py-1">
-              {terminalLogs.map((log, idx) => (
-                <div key={idx} className="flex items-start gap-2 leading-relaxed animate-fadeIn">
-                  <span className="text-cyan-500 select-none">&gt;</span>
-                  <span className={log.includes('Completed') || log.includes('Success') ? 'text-emerald-400 font-bold' : log.includes('Executing') || log.includes('Initializing') ? 'text-cyan-300' : 'text-slate-300'}>
-                    {log}
-                  </span>
-                </div>
               ))}
             </div>
+
+            {/* Right 4 Cols: Live Action Buttons */}
+            <div className="lg:col-span-4 flex items-center justify-start lg:justify-end gap-3">
+              <button
+                onClick={() => runLiveCodeSynthesis(activePreset)}
+                disabled={isTyping}
+                className="bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-black font-extrabold text-xs py-2.5 px-5 rounded-xl flex items-center gap-2 shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all cursor-pointer disabled:opacity-50"
+              >
+                {isTyping ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4 fill-current" />}
+                <span>{isTyping ? 'Synthesizing...' : '▶ RUN FEAT AI CODE'}</span>
+              </button>
+
+              <button
+                onClick={handleCopyCode}
+                className="bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 py-2.5 px-3.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+                title="Copy Active Code"
+              >
+                {codeCopied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4 text-cyan-400" />}
+                <span className="hidden sm:inline">{codeCopied ? 'Copied' : 'Copy'}</span>
+              </button>
+            </div>
+
+          </div>
+
+          {/* Real-time Interactive Parameter Tweaker Bar */}
+          <div className="bg-[#070b19] p-3.5 rounded-2xl border border-slate-800 flex flex-wrap items-center gap-6 text-xs font-mono">
+            <span className="text-cyan-400 font-bold flex items-center gap-1.5">
+              <Sliders className="w-4 h-4" />
+              <span>LIVE AI PARAMETERS:</span>
+            </span>
+
+            {activePreset === 'minimax' && (
+              <div className="flex items-center gap-3">
+                <span className="text-slate-300">Minimax Depth: <strong className="text-yellow-400">{paramDepth}</strong></span>
+                <input 
+                  type="range" 
+                  min="1" 
+                  max="20" 
+                  value={paramDepth} 
+                  onChange={(e) => {
+                    setParamDepth(Number(e.target.value));
+                    runLiveCodeSynthesis('minimax');
+                  }}
+                  className="accent-cyan-400 cursor-pointer w-28 sm:w-36"
+                />
+              </div>
+            )}
+
+            {activePreset === 'octane' && (
+              <div className="flex items-center gap-3">
+                <span className="text-slate-300">GPU Nodes: <strong className="text-cyan-400">{paramGpuNodes} Nodes</strong></span>
+                <input 
+                  type="range" 
+                  min="4" 
+                  max="64" 
+                  step="4"
+                  value={paramGpuNodes} 
+                  onChange={(e) => {
+                    setParamGpuNodes(Number(e.target.value));
+                    runLiveCodeSynthesis('octane');
+                  }}
+                  className="accent-cyan-400 cursor-pointer w-28 sm:w-36"
+                />
+              </div>
+            )}
+
+            {activePreset === 'messmanager' && (
+              <div className="flex items-center gap-3">
+                <span className="text-slate-300">Total Bazaar: <strong className="text-emerald-400">৳{paramBazaarExpense}</strong></span>
+                <input 
+                  type="range" 
+                  min="5000" 
+                  max="50000" 
+                  step="500"
+                  value={paramBazaarExpense} 
+                  onChange={(e) => {
+                    setParamBazaarExpense(Number(e.target.value));
+                    runLiveCodeSynthesis('messmanager');
+                  }}
+                  className="accent-emerald-400 cursor-pointer w-28 sm:w-36"
+                />
+              </div>
+            )}
+          </div>
+
+          {/* REAL VS CODE STYLE SYNTAX-HIGHLIGHTED CODE EDITOR CONTAINER */}
+          <div className="bg-[#011627] rounded-2xl border border-cyan-500/40 overflow-hidden shadow-2xl relative">
+            
+            {/* Editor Window Header Bar */}
+            <div className="bg-[#070d1e] px-4 py-3 border-b border-slate-800 flex items-center justify-between font-mono text-xs text-slate-300">
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-3 h-3 rounded-full bg-red-500/80" />
+                  <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
+                  <div className="w-3 h-3 rounded-full bg-green-500/80" />
+                </div>
+                <span className="text-cyan-300 font-bold pl-2 flex items-center gap-1.5">
+                  <Code2 className="w-3.5 h-3.5 text-cyan-400" />
+                  {currentSnippet.fileName}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-cyan-400 bg-cyan-950 px-2.5 py-0.5 rounded-full border border-cyan-500/40">
+                  {currentSnippet.badge}
+                </span>
+              </div>
+            </div>
+
+            {/* Code Line Display Body */}
+            <div className="p-4 sm:p-6 overflow-x-auto max-h-[420px] custom-scrollbar bg-[#011627] relative">
+              <div className="table w-full">
+                {renderFormattedCode(currentSnippet.code)}
+              </div>
+              {isTyping && (
+                <span className="inline-block w-2 h-4 bg-cyan-400 animate-pulse ml-1 align-middle" />
+              )}
+            </div>
+
+            {/* REAL-TIME TERMINAL STDOUT STACK LOG OUTPUT BELOW EDITOR */}
+            <div className="bg-[#04060f] border-t border-slate-800 p-4 space-y-2 font-mono text-xs">
+              <div className="flex items-center justify-between text-slate-400 border-b border-slate-900 pb-2">
+                <span className="text-cyan-400 font-bold flex items-center gap-1.5">
+                  <Terminal className="w-3.5 h-3.5" />
+                  <span>LIVE EXECUTION OUTPUT (STDOUT STREAM):</span>
+                </span>
+                <span className="text-[11px] text-emerald-400 font-bold">FEAT-V8 Engine • 0 Errors</span>
+              </div>
+
+              <div className="space-y-1 text-slate-300 min-h-[70px]">
+                {executionLogs.map((log, idx) => (
+                  <div key={idx} className="flex items-start gap-2 leading-relaxed animate-fadeIn">
+                    <span className="text-cyan-400 font-bold">&gt;</span>
+                    <span className={log.includes('SUCCESS') || log.includes('VERIFIED') ? 'text-emerald-400 font-bold' : log.includes('Compiling') || log.includes('Initializing') ? 'text-cyan-300' : 'text-slate-300'}>
+                      {log}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
           </div>
 
         </div>
