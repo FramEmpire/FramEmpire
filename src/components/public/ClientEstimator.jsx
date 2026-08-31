@@ -235,35 +235,66 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
     setInvoiceId(generatedId);
     setIssueDate(today);
 
-    // 1. Generate Invoice PDF Base64 string without data:application/pdf;base64, prefix
+    // 1. Generate Invoice PDF Base64 string
     let pdfBase64 = '';
     try {
-      await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js');
-      
-      const pdfContainer = document.createElement('div');
-      pdfContainer.style.position = 'absolute';
-      pdfContainer.style.left = '-9999px';
-      pdfContainer.style.top = '-9999px';
-      pdfContainer.innerHTML = getInvoiceHtmlForPdf(generatedId, today);
-      document.body.appendChild(pdfContainer);
-
-      const dataUri = await window.html2pdf().from(pdfContainer).set({
-        margin: 5,
-        filename: `${generatedId}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-      }).outputPdf('datauristring');
-
-      document.body.removeChild(pdfContainer);
-
-      if (dataUri) {
-        pdfBase64 = dataUri.replace(/^data:application\/pdf;base64,/, '');
+      await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+      if (window.jspdf && window.jspdf.jsPDF) {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        doc.setFontSize(18);
+        doc.text('FRAMEMPIRE STUDIO', 14, 20);
+        doc.setFontSize(9);
+        doc.text('A Revolution of Animation & Digital Engineering', 14, 26);
+        
+        doc.setFontSize(16);
+        doc.text('INVOICE', 150, 20);
+        doc.setFontSize(9);
+        doc.text(`ID: ${generatedId}`, 150, 26);
+        doc.text(`Date: ${today}`, 150, 31);
+        
+        doc.line(14, 35, 196, 35);
+        
+        doc.setFontSize(11);
+        doc.text('INVOICE TO:', 14, 43);
+        doc.setFontSize(10);
+        doc.text(`Client Contact: ${contactInfo || 'Client'}`, 14, 50);
+        doc.text(`Service: ${customServiceText || serviceLabels[service] || 'Creative Service'}`, 14, 56);
+        doc.text(`Package: ${selectedPkg.title} (${selectedPkg.desc})`, 14, 62);
+        doc.text(`Billing Model: ${customBillingText || (billingType === 'monthly' ? 'Monthly Retainer' : 'One-Time Project')}`, 14, 68);
+        
+        doc.setFontSize(11);
+        doc.text('PAYMENT DETAILS:', 110, 43);
+        doc.setFontSize(9);
+        doc.text('Bank: Al-Arafah Islami Bank PLC.', 110, 50);
+        doc.text('A/C Name: ABDUL MUMIN PABEL', 110, 56);
+        doc.text('A/C No: 0171290001972', 110, 62);
+        doc.text('Branch: UTTARA MODEL TOWN BRANCH(AD)', 110, 68);
+        
+        doc.line(14, 75, 196, 75);
+        
+        doc.setFontSize(10);
+        doc.text(`Subtotal: $${finalOriginalTotal}.00 USD`, 14, 85);
+        doc.text(`Discount (${appliedCoupon.code || 'None'}): -${discountPercent}% (-$${discountAmount}.00 USD)`, 14, 92);
+        doc.setFontSize(12);
+        doc.text(`TOTAL PAYABLE: $${finalPayableTotal}.00 USD`, 14, 102);
+        
+        const arrayBuf = doc.output('arraybuffer');
+        let binaryStr = '';
+        const bytes = new Uint8Array(arrayBuf);
+        for (let i = 0; i < bytes.byteLength; i++) {
+          binaryStr += String.fromCharCode(bytes[i]);
+        }
+        pdfBase64 = btoa(binaryStr);
       }
     } catch (pdfErr) {
-      console.log('PDF Base64 Generation Error/Fallback:', pdfErr);
-      // Fallback base64 string if external script is blocked
-      pdfBase64 = btoa(`FRAMEMPIRE INVOICE ${generatedId}\nClient: ${contactInfo}\nTotal: $${finalPayableTotal} USD`);
+      console.log('PDF Base64 Generation Fallback:', pdfErr);
+      try {
+        pdfBase64 = btoa(unescape(encodeURIComponent(`FRAMEMPIRE INVOICE ${generatedId}\nClient: ${contactInfo}\nTotal: $${finalPayableTotal} USD`)));
+      } catch (btoaErr) {
+        pdfBase64 = '';
+      }
     }
 
     // 2. Dispatch POST payload to Google Apps Script Web App Endpoint using mode: "no-cors"
