@@ -234,66 +234,39 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
     
     setInvoiceId(generatedId);
     setIssueDate(today);
+    setSubmitted(true);
 
-    // 1. Generate Invoice PDF Base64 string
-    let pdfBase64 = '';
-    try {
-      await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
-      if (window.jspdf && window.jspdf.jsPDF) {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        
-        doc.setFontSize(18);
-        doc.text('FRAMEMPIRE STUDIO', 14, 20);
-        doc.setFontSize(9);
-        doc.text('A Revolution of Animation & Digital Engineering', 14, 26);
-        
-        doc.setFontSize(16);
-        doc.text('INVOICE', 150, 20);
-        doc.setFontSize(9);
-        doc.text(`ID: ${generatedId}`, 150, 26);
-        doc.text(`Date: ${today}`, 150, 31);
-        
-        doc.line(14, 35, 196, 35);
-        
-        doc.setFontSize(11);
-        doc.text('INVOICE TO:', 14, 43);
-        doc.setFontSize(10);
-        doc.text(`Client Contact: ${contactInfo || 'Client'}`, 14, 50);
-        doc.text(`Service: ${customServiceText || serviceLabels[service] || 'Creative Service'}`, 14, 56);
-        doc.text(`Package: ${selectedPkg.title} (${selectedPkg.desc})`, 14, 62);
-        doc.text(`Billing Model: ${customBillingText || (billingType === 'monthly' ? 'Monthly Retainer' : 'One-Time Project')}`, 14, 68);
-        
-        doc.setFontSize(11);
-        doc.text('PAYMENT DETAILS:', 110, 43);
-        doc.setFontSize(9);
-        doc.text('Bank: Al-Arafah Islami Bank PLC.', 110, 50);
-        doc.text('A/C Name: ABDUL MUMIN PABEL', 110, 56);
-        doc.text('A/C No: 0171290001972', 110, 62);
-        doc.text('Branch: UTTARA MODEL TOWN BRANCH(AD)', 110, 68);
-        
-        doc.line(14, 75, 196, 75);
-        
-        doc.setFontSize(10);
-        doc.text(`Subtotal: $${finalOriginalTotal}.00 USD`, 14, 85);
-        doc.text(`Discount (${appliedCoupon.code || 'None'}): -${discountPercent}% (-$${discountAmount}.00 USD)`, 14, 92);
-        doc.setFontSize(12);
-        doc.text(`TOTAL PAYABLE: $${finalPayableTotal}.00 USD`, 14, 102);
-        
-        const arrayBuf = doc.output('arraybuffer');
-        let binaryStr = '';
-        const bytes = new Uint8Array(arrayBuf);
-        for (let i = 0; i < bytes.byteLength; i++) {
-          binaryStr += String.fromCharCode(bytes[i]);
-        }
-        pdfBase64 = btoa(binaryStr);
-      }
-    } catch (pdfErr) {
-      console.log('PDF Base64 Generation Fallback:', pdfErr);
+    // Wait 150ms for React to render visual #invoice-preview element in DOM
+    await new Promise((res) => setTimeout(res, 150));
+
+    // 1. Capture exact visual DOM container of invoice preview using html2pdf.js
+    const invoiceContainer = document.getElementById("invoice-preview") || document.querySelector(".invoice-container");
+    let base64String = '';
+
+    if (invoiceContainer) {
       try {
-        pdfBase64 = btoa(unescape(encodeURIComponent(`FRAMEMPIRE INVOICE ${generatedId}\nClient: ${contactInfo}\nTotal: $${finalPayableTotal} USD`)));
-      } catch (btoaErr) {
-        pdfBase64 = '';
+        await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js');
+
+        const opt = {
+          margin: 0.1,
+          filename: `Invoice_${generatedId}.pdf`,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true, logging: false },
+          jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+
+        const pdfBlob = await window.html2pdf().set(opt).from(invoiceContainer).output('blob');
+
+        base64String = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(pdfBlob);
+          reader.onloadend = function () {
+            const res = reader.result ? reader.result.split(',')[1] : '';
+            resolve(res);
+          };
+        });
+      } catch (err) {
+        console.log('html2pdf exact DOM capture error:', err);
       }
     }
 
@@ -306,10 +279,10 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
       billing_model: customBillingText || (billingType === 'monthly' ? 'Monthly Retainer' : 'One-Time Project'),
       package_name: selectedPkg.title || 'Selected Package',
       final_price: `$${finalPayableTotal} USD${billingType === 'monthly' ? ' / mo' : ''}`,
-      pdfBase64: pdfBase64 || ''
+      pdfBase64: base64String || ''
     };
 
-    // Format A: Raw JSON Stringified Body (For GAS scripts parsing JSON.parse(e.postData.contents))
+    // Send payload to Google Apps Script
     try {
       await fetch(googleWebAppUrl, {
         method: 'POST',
@@ -319,27 +292,9 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
         },
         body: JSON.stringify(googlePayload)
       });
-      console.log('Google Apps Script JSON dispatch complete (mode: no-cors).');
-    } catch (gasErr1) {
-      console.log('Google Apps Script JSON submission dispatch error:', gasErr1);
-    }
-
-    // Format B: Form URL Encoded Body (For GAS scripts parsing e.parameter directly)
-    try {
-      const urlParams = new URLSearchParams();
-      Object.keys(googlePayload).forEach((k) => urlParams.append(k, googlePayload[k]));
-
-      await fetch(googleWebAppUrl, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: urlParams.toString()
-      });
-      console.log('Google Apps Script Form-Encoded dispatch complete (mode: no-cors).');
-    } catch (gasErr2) {
-      console.log('Google Apps Script Form-Encoded submission dispatch error:', gasErr2);
+      console.log('Exact visual web invoice uploaded successfully to Google Apps Script!');
+    } catch (gasErr) {
+      console.log('Google Apps Script submission dispatch error:', gasErr);
     }
 
     // 3. Web3Forms Backup Notification Email Dispatch
@@ -669,7 +624,7 @@ Studio: FramEmpire (A Revolution of Animation)`;
             </div>
 
             {/* OFFICIAL FRAMEMPIRE TEMPLATE SCREEN PREVIEW */}
-            <div className="bg-white text-slate-900 rounded-2xl p-5 sm:p-6 text-xs space-y-5 shadow-2xl relative border border-slate-200">
+            <div id="invoice-preview" className="invoice-container bg-white text-slate-900 rounded-2xl p-5 sm:p-6 text-xs space-y-5 shadow-2xl relative border border-slate-200">
               
               {/* Header Row */}
               <div className="flex justify-between items-stretch border-b border-slate-200 pb-4">
