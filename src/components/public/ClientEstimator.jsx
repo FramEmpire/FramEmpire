@@ -232,9 +232,11 @@ Studio: FramEmpire (A Revolution of Animation)`;
 
                   <div>
                     <h3 class="font-bold text-slate-900 text-sm mb-1">Payment Info:</h3>
-                    <p class="text-[11px] text-slate-600"><span class="w-20 inline-block">Account No :</span> 01615288259</p>
-                    <p class="text-[11px] text-slate-600"><span class="w-20 inline-block">A/C Name :</span> FramEmpire Studio</p>
-                    <p class="text-[11px] text-slate-600"><span class="w-20 inline-block">Bank Details :</span> Bkash / Nagad / Wire</p>
+                    <p class="text-[11px] text-slate-600"><span class="w-20 inline-block font-semibold">AC No :</span> 0171290001972</p>
+                    <p class="text-[11px] text-slate-600"><span class="w-20 inline-block font-semibold">A/C Name :</span> ABDUL MUMIN PABEL</p>
+                    <p class="text-[11px] text-slate-600"><span class="w-20 inline-block font-semibold">Bank :</span> Al-Arafah Islami Bank PLC.</p>
+                    <p class="text-[11px] text-slate-600"><span class="w-20 inline-block font-semibold">Branch :</span> UTTARA MODEL TOWN BRANCH(AD)</p>
+                    <p class="text-[10px] text-slate-500 pt-1.5 leading-tight italic">* For alternative payment channels outside bank transfer, please contact WhatsApp: <strong>+880 1615-288259</strong></p>
                   </div>
                 </div>
               </div>
@@ -497,9 +499,11 @@ Studio: FramEmpire (A Revolution of Animation)`;
 
                 <div>
                   <h4 className="font-bold text-slate-900 text-xs mb-1">Payment Info:</h4>
-                  <p className="text-[11px] text-slate-600"><span className="w-16 inline-block">Account No :</span> 01615288259</p>
-                  <p className="text-[11px] text-slate-600"><span className="w-16 inline-block">A/C Name :</span> FramEmpire Studio</p>
-                  <p className="text-[11px] text-slate-600"><span className="w-16 inline-block">Bank Details :</span> Bkash / Nagad / Wire</p>
+                  <p className="text-[11px] text-slate-600"><span className="w-16 inline-block font-semibold">AC No :</span> 0171290001972</p>
+                  <p className="text-[11px] text-slate-600"><span className="w-16 inline-block font-semibold">A/C Name :</span> ABDUL MUMIN PABEL</p>
+                  <p className="text-[11px] text-slate-600"><span className="w-16 inline-block font-semibold">Bank :</span> Al-Arafah Islami Bank PLC.</p>
+                  <p className="text-[11px] text-slate-600"><span className="w-16 inline-block font-semibold">Branch :</span> UTTARA MODEL TOWN BRANCH(AD)</p>
+                  <p className="text-[10px] text-slate-500 pt-1.5 leading-tight italic">* For alternative payment channels outside bank transfer, please contact WhatsApp: <a href="https://wa.me/8801615288259" target="_blank" rel="noreferrer" className="text-cyan-600 font-bold hover:underline">+880 1615-288259</a></p>
                 </div>
               </div>
 
