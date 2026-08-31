@@ -270,14 +270,15 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
     const googleWebAppUrl = 'https://script.google.com/macros/s/AKfycby8ZerusoyEgazjQzELO1uUykEsil459cUHMZMcpG-61nbUO-bly8i2ZnasvjY4kO0C/exec';
     
     const googlePayload = {
-      client_email: contactInfo,
+      client_email: contactInfo || '',
       selected_service: customServiceText || serviceLabels[service] || 'Creative Service',
       billing_model: customBillingText || (billingType === 'monthly' ? 'Monthly Retainer' : 'One-Time Project'),
       package_name: selectedPkg.title || 'Selected Package',
       final_price: `$${finalPayableTotal} USD${billingType === 'monthly' ? ' / mo' : ''}`,
-      pdfBase64: pdfBase64
+      pdfBase64: pdfBase64 || ''
     };
 
+    // Format A: Raw JSON Stringified Body (For GAS scripts parsing JSON.parse(e.postData.contents))
     try {
       await fetch(googleWebAppUrl, {
         method: 'POST',
@@ -287,9 +288,27 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
         },
         body: JSON.stringify(googlePayload)
       });
-      console.log('Google Apps Script Web App dispatch complete (mode: no-cors).');
-    } catch (gasErr) {
-      console.log('Google Apps Script submission dispatch error:', gasErr);
+      console.log('Google Apps Script JSON dispatch complete (mode: no-cors).');
+    } catch (gasErr1) {
+      console.log('Google Apps Script JSON submission dispatch error:', gasErr1);
+    }
+
+    // Format B: Form URL Encoded Body (For GAS scripts parsing e.parameter directly)
+    try {
+      const urlParams = new URLSearchParams();
+      Object.keys(googlePayload).forEach((k) => urlParams.append(k, googlePayload[k]));
+
+      await fetch(googleWebAppUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: urlParams.toString()
+      });
+      console.log('Google Apps Script Form-Encoded dispatch complete (mode: no-cors).');
+    } catch (gasErr2) {
+      console.log('Google Apps Script Form-Encoded submission dispatch error:', gasErr2);
     }
 
     // 3. Web3Forms Backup Notification Email Dispatch
