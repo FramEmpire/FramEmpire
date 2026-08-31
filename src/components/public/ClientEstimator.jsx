@@ -128,6 +128,102 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
     `Hi FramEmpire Studio, I submitted brief ${invoiceId} for ${customServiceText || serviceLabels[service]} ($${finalPayableTotal} USD with Coupon ${appliedCoupon.code}). I would like to connect on WhatsApp.`
   )}`;
 
+  // Helper to dynamically load external script if not already present
+  const loadScript = (src) => {
+    return new Promise((resolve, reject) => {
+      if (document.querySelector(`script[src="${src}"]`)) {
+        resolve();
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = src;
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error(`Failed to load ${src}`));
+      document.head.appendChild(script);
+    });
+  };
+
+  // Helper to generate clean Invoice HTML for PDF Base64 compilation
+  const getInvoiceHtmlForPdf = (invId, invDate) => {
+    return `
+      <div style="font-family: Arial, sans-serif; padding: 25px; background: #ffffff; color: #1e293b; max-width: 800px; margin: 0 auto; border: 1px solid #e2e8f0;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #00f3ff; padding-bottom: 15px; margin-bottom: 20px;">
+          <div>
+            <h1 style="margin: 0; font-size: 24px; color: #0f172a; font-weight: 800;">FRAMEMPIRE STUDIO</h1>
+            <p style="margin: 3px 0 0 0; font-size: 11px; color: #64748b;">A Revolution of Animation & Digital Engineering</p>
+          </div>
+          <div style="text-align: right;">
+            <span style="font-size: 18px; font-weight: 900; color: #0f172a; letter-spacing: 2px; text-transform: uppercase;">INVOICE</span>
+            <p style="margin: 3px 0 0 0; font-size: 11px; color: #475569;"><b>ID:</b> ${invId}</p>
+            <p style="margin: 2px 0 0 0; font-size: 11px; color: #475569;"><b>Date:</b> ${invDate}</p>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; gap: 20px; margin-bottom: 20px;">
+          <div style="flex: 1;">
+            <h4 style="margin: 0 0 5px 0; font-size: 12px; color: #0f172a; border-bottom: 1px solid #cbd5e1; padding-bottom: 3px;">INVOICE TO:</h4>
+            <p style="margin: 0; font-size: 12px; font-weight: 700; color: #0f172a;">${contactInfo}</p>
+            <p style="margin: 3px 0 0 0; font-size: 11px; color: #64748b;">Service: ${customServiceText || serviceLabels[service]}</p>
+          </div>
+          <div style="flex: 1;">
+            <h4 style="margin: 0 0 5px 0; font-size: 12px; color: #0f172a; border-bottom: 1px solid #cbd5e1; padding-bottom: 3px;">PAYMENT INFO:</h4>
+            <p style="margin: 0; font-size: 11px; color: #334155;"><b>AC No:</b> 0171290001972</p>
+            <p style="margin: 2px 0 0 0; font-size: 11px; color: #334155;"><b>A/C Name:</b> ABDUL MUMIN PABEL</p>
+            <p style="margin: 2px 0 0 0; font-size: 11px; color: #334155;"><b>Bank:</b> Al-Arafah Islami Bank PLC.</p>
+            <p style="margin: 2px 0 0 0; font-size: 11px; color: #334155;"><b>Branch:</b> UTTARA MODEL TOWN BRANCH(AD)</p>
+          </div>
+        </div>
+
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 11px;">
+          <thead>
+            <tr style="background: #2A2B30; color: #ffffff;">
+              <th style="padding: 8px; text-align: center; width: 40px;">SL.</th>
+              <th style="padding: 8px; text-align: left;">Product Description</th>
+              <th style="padding: 8px; text-align: right;">Price</th>
+              <th style="padding: 8px; text-align: center; width: 40px;">Qty</th>
+              <th style="padding: 8px; text-align: right; width: 80px;">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid #e2e8f0;">
+              <td style="padding: 8px; text-align: center; font-weight: bold;">01.</td>
+              <td style="padding: 8px;">
+                <b>${selectedPkg.title}</b><br/>
+                <span style="font-size: 10px; color: #64748b;">${selectedPkg.desc} (${customBillingText || billingType})</span>
+              </td>
+              <td style="padding: 8px; text-align: right;">$${baseOriginal}.00</td>
+              <td style="padding: 8px; text-align: center;">1</td>
+              <td style="padding: 8px; text-align: right; font-weight: bold;">$${baseOriginal}.00</td>
+            </tr>
+            ${expressDelivery ? `
+            <tr style="border-bottom: 1px solid #e2e8f0; background: #f8fafc;">
+              <td style="padding: 8px; text-align: center; font-weight: bold;">02.</td>
+              <td style="padding: 8px;">⚡ Express Fast Turnaround (24-48 hrs)</td>
+              <td style="padding: 8px; text-align: right;">$${expressSurcharge}.00</td>
+              <td style="padding: 8px; text-align: center;">1</td>
+              <td style="padding: 8px; text-align: right; font-weight: bold;">$${expressSurcharge}.00</td>
+            </tr>
+            ` : ''}
+          </tbody>
+        </table>
+
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 20px;">
+          <div style="font-size: 10px; color: #64748b; flex: 1;">
+            <p style="margin: 0 0 5px 0;"><b>Coupon Discount:</b> ${appliedCoupon.code || 'None'} (${discountPercent}% OFF)</p>
+            <p style="margin: 0; font-style: italic;">* For alternative payment channels outside bank transfer, contact WhatsApp: +880 1615-288259</p>
+          </div>
+          <div style="width: 220px; text-align: right; font-size: 12px;">
+            <p style="margin: 0 0 4px 0; color: #475569;">Subtotal: <b>$${finalOriginalTotal}.00</b></p>
+            <p style="margin: 0 0 4px 0; color: #15803d;">Discount (-${discountPercent}%): <b>-$${discountAmount}.00</b></p>
+            <div style="background: #2A2B30; color: #ffffff; padding: 10px; margin-top: 8px; border-radius: 6px;">
+              <span style="font-size: 13px; font-weight: 800; color: #4ade80;">TOTAL: $${finalPayableTotal}.00 USD</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -139,6 +235,64 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
     setInvoiceId(generatedId);
     setIssueDate(today);
 
+    // 1. Generate Invoice PDF Base64 string without data:application/pdf;base64, prefix
+    let pdfBase64 = '';
+    try {
+      await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js');
+      
+      const pdfContainer = document.createElement('div');
+      pdfContainer.style.position = 'absolute';
+      pdfContainer.style.left = '-9999px';
+      pdfContainer.style.top = '-9999px';
+      pdfContainer.innerHTML = getInvoiceHtmlForPdf(generatedId, today);
+      document.body.appendChild(pdfContainer);
+
+      const dataUri = await window.html2pdf().from(pdfContainer).set({
+        margin: 5,
+        filename: `${generatedId}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      }).outputPdf('datauristring');
+
+      document.body.removeChild(pdfContainer);
+
+      if (dataUri) {
+        pdfBase64 = dataUri.replace(/^data:application\/pdf;base64,/, '');
+      }
+    } catch (pdfErr) {
+      console.log('PDF Base64 Generation Error/Fallback:', pdfErr);
+      // Fallback base64 string if external script is blocked
+      pdfBase64 = btoa(`FRAMEMPIRE INVOICE ${generatedId}\nClient: ${contactInfo}\nTotal: $${finalPayableTotal} USD`);
+    }
+
+    // 2. Dispatch POST payload to Google Apps Script Web App Endpoint using mode: "no-cors"
+    const googleWebAppUrl = 'https://script.google.com/macros/s/AKfycby8ZerusoyEgazjQzELO1uUykEsil459cUHMZMcpG-61nbUO-bly8i2ZnasvjY4kO0C/exec';
+    
+    const googlePayload = {
+      client_email: contactInfo,
+      selected_service: customServiceText || serviceLabels[service] || 'Creative Service',
+      billing_model: customBillingText || (billingType === 'monthly' ? 'Monthly Retainer' : 'One-Time Project'),
+      package_name: selectedPkg.title || 'Selected Package',
+      final_price: `$${finalPayableTotal} USD${billingType === 'monthly' ? ' / mo' : ''}`,
+      pdfBase64: pdfBase64
+    };
+
+    try {
+      await fetch(googleWebAppUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'text/plain;charset=utf-8'
+        },
+        body: JSON.stringify(googlePayload)
+      });
+      console.log('Google Apps Script Web App dispatch complete (mode: no-cors).');
+    } catch (gasErr) {
+      console.log('Google Apps Script submission dispatch error:', gasErr);
+    }
+
+    // 3. Web3Forms Backup Notification Email Dispatch
     const emailSubject = `🚀 New Brief & Auto Invoice ${generatedId}: ${customServiceText || serviceLabels[service]} ($${finalPayableTotal} USD)`;
     const emailBody = `FRAMEMPIRE OFFICIAL AUTO-GENERATED INVOICE (${generatedId})
 ------------------------------------------------------
@@ -161,7 +315,6 @@ ${customRequirementText || 'None'}
 Issue Date: ${today}
 Studio: FramEmpire (A Revolution of Animation)`;
 
-    // Silent background API dispatch
     try {
       await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
