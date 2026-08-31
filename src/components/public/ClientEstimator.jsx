@@ -234,39 +234,129 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
     
     setInvoiceId(generatedId);
     setIssueDate(today);
-    setSubmitted(true);
+    setInvoiceId(generatedId);
+    setIssueDate(today);
 
-    // Wait 150ms for React to render visual #invoice-preview element in DOM
-    await new Promise((res) => setTimeout(res, 150));
-
-    // 1. Capture exact visual DOM container of invoice preview using html2pdf.js
-    const invoiceContainer = document.getElementById("invoice-preview") || document.querySelector(".invoice-container");
+    // 1. Render exact visual web invoice DOM container and capture via html2pdf.js Blob output
     let base64String = '';
+    const tempDiv = document.createElement('div');
+    tempDiv.style.position = 'fixed';
+    tempDiv.style.left = '-9999px';
+    tempDiv.style.top = '0px';
+    tempDiv.style.width = '800px';
+    tempDiv.style.background = '#ffffff';
+    tempDiv.style.color = '#0f172a';
+    tempDiv.innerHTML = `
+      <div id="invoice-preview" class="invoice-container" style="font-family: Arial, sans-serif; padding: 30px; background: #ffffff; color: #0f172a;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #00f3ff; padding-bottom: 15px; margin-bottom: 20px;">
+          <div>
+            <h1 style="margin: 0; font-size: 22px; color: #0f172a; font-weight: 900; letter-spacing: 1px;">FRAMEMPIRE STUDIO</h1>
+            <p style="margin: 3px 0 0 0; font-size: 11px; color: #64748b;">A Revolution of Animation & Digital Engineering</p>
+            <p style="margin: 8px 0 0 0; font-size: 12px; color: #475569;"><b>Invoice ID:</b> ${generatedId}</p>
+            <p style="margin: 2px 0 0 0; font-size: 12px; color: #475569;"><b>Date:</b> ${today}</p>
+          </div>
+          <div style="background: #2A2B30; color: #ffffff; padding: 15px 25px; font-weight: 900; font-size: 18px; letter-spacing: 3px; border-radius: 6px;">
+            INVOICE
+          </div>
+        </div>
 
-    if (invoiceContainer) {
-      try {
-        await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js');
+        <div style="display: flex; justify-content: space-between; gap: 20px; margin-bottom: 25px;">
+          <div style="flex: 1;">
+            <h4 style="margin: 0 0 6px 0; font-size: 13px; font-weight: bold; color: #0f172a; border-bottom: 2px solid #cbd5e1; padding-bottom: 3px;">INVOICE TO:</h4>
+            <p style="margin: 0; font-size: 13px; font-weight: bold; color: #0f172a;">${contactInfo || 'Valued Client'}</p>
+            <p style="margin: 3px 0 0 0; font-size: 11px; color: #64748b;">Service: ${customServiceText || serviceLabels[service]}</p>
+          </div>
+          <div style="flex: 1;">
+            <h4 style="margin: 0 0 6px 0; font-size: 13px; font-weight: bold; color: #0f172a; border-bottom: 2px solid #cbd5e1; padding-bottom: 3px;">PAYMENT INFO:</h4>
+            <p style="margin: 0; font-size: 11px; color: #334155;"><b>AC No :</b> 0171290001972</p>
+            <p style="margin: 2px 0 0 0; font-size: 11px; color: #334155;"><b>A/C Name :</b> ABDUL MUMIN PABEL</p>
+            <p style="margin: 2px 0 0 0; font-size: 11px; color: #334155;"><b>Bank :</b> Al-Arafah Islami Bank PLC.</p>
+            <p style="margin: 2px 0 0 0; font-size: 11px; color: #334155;"><b>Branch :</b> UTTARA MODEL TOWN BRANCH(AD)</p>
+            <p style="margin: 5px 0 0 0; font-size: 10px; color: #64748b; font-style: italic;">* For alternative payment channels, WhatsApp: +880 1615-288259</p>
+          </div>
+        </div>
 
-        const opt = {
-          margin: 0.1,
-          filename: `Invoice_${generatedId}.pdf`,
-          image: { type: 'jpeg', quality: 0.98 },
-          html2canvas: { scale: 2, useCORS: true, logging: false },
-          jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 25px; font-size: 12px;">
+          <thead>
+            <tr style="background: #2A2B30; color: #ffffff;">
+              <th style="padding: 10px; text-align: center; width: 40px;">SL.</th>
+              <th style="padding: 10px; text-align: left;">Product Description</th>
+              <th style="padding: 10px; text-align: right;">Price</th>
+              <th style="padding: 10px; text-align: center; width: 40px;">Qty</th>
+              <th style="padding: 10px; text-align: right; width: 80px;">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid #e2e8f0;">
+              <td style="padding: 10px; text-align: center; font-weight: bold;">01.</td>
+              <td style="padding: 10px;">
+                <b>${selectedPkg.title}</b><br/>
+                <span style="font-size: 10px; color: #64748b;">${selectedPkg.desc} (${customBillingText || billingType})</span>
+              </td>
+              <td style="padding: 10px; text-align: right;">$${baseOriginal}.00</td>
+              <td style="padding: 10px; text-align: center;">1</td>
+              <td style="padding: 10px; text-align: right; font-weight: bold;">$${baseOriginal}.00</td>
+            </tr>
+            ${expressDelivery ? `
+            <tr style="border-bottom: 1px solid #e2e8f0; background: #f8fafc;">
+              <td style="padding: 10px; text-align: center; font-weight: bold;">02.</td>
+              <td style="padding: 10px;">⚡ Express Fast Turnaround (24-48 hrs)</td>
+              <td style="padding: 10px; text-align: right;">$${expressSurcharge}.00</td>
+              <td style="padding: 10px; text-align: center;">1</td>
+              <td style="padding: 10px; text-align: right; font-weight: bold;">$${expressSurcharge}.00</td>
+            </tr>
+            ` : ''}
+          </tbody>
+        </table>
+
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 20px;">
+          <div style="background: #2A2B30; color: #ffffff; padding: 15px; font-size: 11px; width: 55%; border-radius: 4px;">
+            <p style="margin: 0;"><b>Email :</b> team.framempire@gmail.com</p>
+            <p style="margin: 3px 0;"><b>Web :</b> framempire.com</p>
+            <p style="margin: 0;"><b>Address :</b> Dhaka, Bangladesh</p>
+            <div style="border-top: 1px solid #475569; margin-top: 10px; padding-top: 8px; font-size: 10px; color: #cbd5e1;">
+              <b>Terms & Conditions:</b> Discount claimed via coupon code ${appliedCoupon.code} (${discountPercent}% OFF).
+            </div>
+          </div>
+          <div style="width: 40%; text-align: right; font-size: 12px;">
+            <p style="margin: 0 0 5px 0; color: #475569;">Sub Total: <b>$${finalOriginalTotal}.00</b></p>
+            <p style="margin: 0 0 5px 0; color: #16a34a;">Discount (${appliedCoupon.code}): <b>-$${discountAmount}.00</b></p>
+            <div style="background: #2A2B30; color: #ffffff; padding: 12px; font-weight: bold; font-size: 15px; margin-top: 8px; border-radius: 4px;">
+              Total: <span style="color: #4ade80;">$${finalPayableTotal}.00 USD</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(tempDiv);
+
+    try {
+      await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js');
+
+      const opt = {
+        margin: 0.1,
+        filename: `Invoice_${generatedId}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, logging: false },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+      };
+
+      const invoiceNode = tempDiv.querySelector('.invoice-container');
+      const pdfBlob = await window.html2pdf().set(opt).from(invoiceNode).output('blob');
+
+      base64String = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(pdfBlob);
+        reader.onloadend = function () {
+          const res = reader.result ? reader.result.split(',')[1] : '';
+          resolve(res);
         };
-
-        const pdfBlob = await window.html2pdf().set(opt).from(invoiceContainer).output('blob');
-
-        base64String = await new Promise((resolve) => {
-          const reader = new FileReader();
-          reader.readAsDataURL(pdfBlob);
-          reader.onloadend = function () {
-            const res = reader.result ? reader.result.split(',')[1] : '';
-            resolve(res);
-          };
-        });
-      } catch (err) {
-        console.log('html2pdf exact DOM capture error:', err);
+      });
+    } catch (err) {
+      console.log('html2pdf exact DOM capture error:', err);
+    } finally {
+      if (document.body.contains(tempDiv)) {
+        document.body.removeChild(tempDiv);
       }
     }
 
