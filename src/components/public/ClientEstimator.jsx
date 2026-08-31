@@ -298,7 +298,7 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
     }
 
     // 2. Dispatch POST payload to Google Apps Script Web App Endpoint using mode: "no-cors"
-    const googleWebAppUrl = 'https://script.google.com/macros/s/AKfycbzhqtsNZoAfANh-a13B6rw7bMxTgk2gyqQk9YWAB-OBThc5jDX9nK0LLGVEKrVnkvbX/exec';
+    const googleWebAppUrl = 'https://script.google.com/macros/s/AKfycby2AtH2DIrVluMCjNGe-TOgnRlrr0APxCJvWmZPjDZc77_5dXXh9V1ROv2fOwckXAP8/exec';
     
     const googlePayload = {
       client_email: contactInfo || '',
