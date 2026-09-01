@@ -86,11 +86,36 @@ export default function TicTacToeGamePage({ onBackToHome, onOpenEstimator }) {
       ]
     },
     {
+      id: 'project-3-wheel',
+      title: 'Project 3 Wheel',
+      category: 'mobile',
+      badgeText: 'ANDROID APP • RICKSHAW FLEET & GARAGE HUB',
+      badgeColor: 'border-amber-500/40 text-amber-300 bg-amber-950/60',
+      logo: '/project_3_wheel_logo.png',
+      tagline: 'Digital Hub for Rickshaw Fleet Owners, Garage Expense & Daily Rental Tracker',
+      description: 'All-in-one digital management hub engineered for rickshaw fleet owners and garage managers. Streamlines daily rental collection tracking (দৈনিক জমা), garage maintenance expenses (গ্যারেজ মেরামত ও খরচ), driver accounts, and fleet analytics.',
+      platforms: ['Android APK'],
+      features: [
+        'Daily Rental Collection Tracker (দৈনিক জমা হিসাব)',
+        'Garage Maintenance & Expense Ledger (মেরামত ও খরচ)',
+        'Rickshaw Fleet & Driver Account Management',
+        'Offline Mode & Instant Cloud Sync'
+      ],
+      downloads: [
+        {
+          label: 'Download Android APK (v1.0.0)',
+          url: 'https://github.com/pabeledp/Project3Wheel/raw/main/releases/Project3Wheel-v1.0.0.apk',
+          icon: 'android',
+          variant: 'amber'
+        }
+      ]
+    },
+    {
       id: 'tictactoe-genz',
       title: 'Tic Tac Toe: GenZ Multiplayer',
       category: 'games',
       badgeText: 'ANDROID GAME • EDP UNIVERSE',
-      badgeColor: 'border-amber-500/40 text-amber-300 bg-amber-950/60',
+      badgeColor: 'border-yellow-500/40 text-yellow-300 bg-yellow-950/60',
       logo: '/tictactoe_game_icon.png',
       tagline: 'Arcade Mobile Game & 100 Feni Villages Campaign Map',
       description: 'GenZ Arcade mobile game featuring real-time multiplayer lobbies, dynamic 3x3 to 12x12 custom grid engines, arcade avatar unlocks, and an interactive 100 Feni Villages campaign mode against Minimax AI.',
@@ -189,9 +214,9 @@ export default function TicTacToeGamePage({ onBackToHome, onOpenEstimator }) {
           {/* Interactive Category Filter Pills */}
           <div className="pt-3 flex flex-wrap items-center justify-center gap-2.5 sm:gap-3">
             {[
-              { id: 'all', label: '⚡ All Software & Apps', count: 3 },
+              { id: 'all', label: '⚡ All Software & Apps', count: 4 },
               { id: 'desktop', label: '💻 Desktop Software', count: 1 },
-              { id: 'mobile', label: '📱 Mobile Apps', count: 1 },
+              { id: 'mobile', label: '📱 Mobile Apps', count: 2 },
               { id: 'games', label: '🎮 Arcade Games', count: 1 }
             ].map((tab) => (
               <button

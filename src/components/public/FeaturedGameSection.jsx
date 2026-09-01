@@ -31,43 +31,55 @@ export default function FeaturedGameSection({ onOpenGameDetails }) {
                       <span>FEAT SUITE SUITE</span>
                     </div>
                     <span className="text-[10px] bg-cyan-950 border border-cyan-500/40 text-cyan-300 px-2 py-0.5 rounded-full font-mono">
-                      3 LIVE APPS
+                      4 LIVE APPS
                     </span>
                   </div>
 
-                  {/* 3 App Mini Preview Rows */}
-                  <div className="space-y-2.5">
+                  {/* 4 App Mini Preview Rows */}
+                  <div className="space-y-2">
                     {/* FE Player */}
-                    <div className="flex items-center justify-between bg-slate-900/80 p-2.5 rounded-xl border border-slate-800 hover:border-cyan-500/40 transition-colors">
-                      <div className="flex items-center gap-3">
-                        <img src="/fe_player_logo.png" alt="FE Player" className="w-9 h-9 object-contain rounded-lg shrink-0" />
+                    <div className="flex items-center justify-between bg-slate-900/80 p-2 rounded-xl border border-slate-800 hover:border-cyan-500/40 transition-colors">
+                      <div className="flex items-center gap-2.5">
+                        <img src="/fe_player_logo.png" alt="FE Player" className="w-8 h-8 object-contain rounded-lg shrink-0" />
                         <div className="text-left">
-                          <span className="font-bold text-white text-xs block">FE Player</span>
-                          <span className="text-[10px] text-slate-400">Windows • macOS • Android</span>
+                          <span className="font-bold text-white text-[11px] block">FE Player</span>
+                          <span className="text-[9px] text-slate-400">Windows • macOS • Android</span>
                         </div>
                       </div>
                       <span className="text-[9px] bg-cyan-950 text-cyan-400 border border-cyan-500/40 px-2 py-0.5 rounded-full font-mono">.EXE / .DMG</span>
                     </div>
 
-                    {/* MessManager Pro */}
-                    <div className="flex items-center justify-between bg-slate-900/80 p-2.5 rounded-xl border border-slate-800 hover:border-emerald-500/40 transition-colors">
-                      <div className="flex items-center gap-3">
-                        <img src="/mess_manager_logo.png" alt="MessManager Pro" className="w-9 h-9 object-contain rounded-lg shrink-0" />
+                    {/* Project 3 Wheel */}
+                    <div className="flex items-center justify-between bg-slate-900/80 p-2 rounded-xl border border-slate-800 hover:border-amber-500/40 transition-colors">
+                      <div className="flex items-center gap-2.5">
+                        <img src="/project_3_wheel_logo.png" alt="Project 3 Wheel" className="w-8 h-8 object-contain rounded-lg shrink-0" />
                         <div className="text-left">
-                          <span className="font-bold text-white text-xs block">MessManager Pro</span>
-                          <span className="text-[10px] text-slate-400">Financial Hostel App</span>
+                          <span className="font-bold text-white text-[11px] block">Project 3 Wheel</span>
+                          <span className="text-[9px] text-slate-400">Rickshaw Garage Hub</span>
+                        </div>
+                      </div>
+                      <span className="text-[9px] bg-amber-950 text-amber-400 border border-amber-500/40 px-2 py-0.5 rounded-full font-mono">.APK</span>
+                    </div>
+
+                    {/* MessManager Pro */}
+                    <div className="flex items-center justify-between bg-slate-900/80 p-2 rounded-xl border border-slate-800 hover:border-emerald-500/40 transition-colors">
+                      <div className="flex items-center gap-2.5">
+                        <img src="/mess_manager_logo.png" alt="MessManager Pro" className="w-8 h-8 object-contain rounded-lg shrink-0" />
+                        <div className="text-left">
+                          <span className="font-bold text-white text-[11px] block">MessManager Pro</span>
+                          <span className="text-[9px] text-slate-400">Financial Hostel App</span>
                         </div>
                       </div>
                       <span className="text-[9px] bg-emerald-950 text-emerald-400 border border-emerald-500/40 px-2 py-0.5 rounded-full font-mono">.APK</span>
                     </div>
 
                     {/* Tic Tac Toe */}
-                    <div className="flex items-center justify-between bg-slate-900/80 p-2.5 rounded-xl border border-slate-800 hover:border-yellow-500/40 transition-colors">
-                      <div className="flex items-center gap-3">
-                        <img src="/tictactoe_game_icon.png" alt="Tic Tac Toe GenZ" className="w-9 h-9 object-contain rounded-lg shrink-0" />
+                    <div className="flex items-center justify-between bg-slate-900/80 p-2 rounded-xl border border-slate-800 hover:border-yellow-500/40 transition-colors">
+                      <div className="flex items-center gap-2.5">
+                        <img src="/tictactoe_game_icon.png" alt="Tic Tac Toe GenZ" className="w-8 h-8 object-contain rounded-lg shrink-0" />
                         <div className="text-left">
-                          <span className="font-bold text-white text-xs block">Tic Tac Toe: GenZ</span>
-                          <span className="text-[10px] text-slate-400">Arcade Mobile Game</span>
+                          <span className="font-bold text-white text-[11px] block">Tic Tac Toe: GenZ</span>
+                          <span className="text-[9px] text-slate-400">Arcade Mobile Game</span>
                         </div>
                       </div>
                       <span className="text-[9px] bg-amber-950 text-amber-400 border border-amber-500/40 px-2 py-0.5 rounded-full font-mono">.APK</span>
