@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Sparkles, ArrowRight, Palette, Film, Code2, Star, Flame, Phone, Mail, Globe, Download, X, Copy, Check, QrCode, MessageCircle, Contact } from 'lucide-react';
 import { AGENCY_INFO } from '../../data/creativeData';
 
@@ -20,53 +20,8 @@ export default function HeroSection({ onExplorePortfolio, onOpenEstimator }) {
   const [showContactModal, setShowContactModal] = useState(false);
   const [copiedField, setCopiedField] = useState(null);
   const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
-  const [qrDataUrl, setQrDataUrl] = useState('');
-  const [logoDataUrl, setLogoDataUrl] = useState('');
 
-  useEffect(() => {
-    if (!showContactModal) return;
-    let isMounted = true;
-
-    // 1. Pre-fetch QR Code as Base64 DataURL
-    const fetchQr = async () => {
-      try {
-        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=BEGIN%3AVCARD%0AVERSION%3A3.0%0AN%3AFramEmpire%20Studio%0AFN%3AFramEmpire%20Studio%0ATEL%3A%2B8801615288259%0AEMAIL%3Ateam.framempire%40gmail.com%0AURL%3Ahttps%3A%2F%2Fwww.framempire.com%0AEND%3AVCARD&color=000000&bcolor=ffffff`;
-        const res = await fetch(qrUrl);
-        const blob = await res.blob();
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          if (isMounted && reader.result) {
-            setQrDataUrl(reader.result);
-          }
-        };
-        reader.readAsDataURL(blob);
-      } catch (err) {
-        console.error('QR fetch error:', err);
-      }
-    };
-
-    // 2. Pre-fetch White Logo as Base64 DataURL
-    const fetchLogo = async () => {
-      try {
-        const res = await fetch('/framempire_logo_white.png');
-        const blob = await res.blob();
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          if (isMounted && reader.result) {
-            setLogoDataUrl(reader.result);
-          }
-        };
-        reader.readAsDataURL(blob);
-      } catch (err) {
-        console.error('Logo fetch error:', err);
-      }
-    };
-
-    fetchQr();
-    fetchLogo();
-
-    return () => { isMounted = false; };
-  }, [showContactModal]);
+  const qrCodeDirectUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=BEGIN%3AVCARD%0AVERSION%3A3.0%0AN%3AFramEmpire%20Studio%0AFN%3AFramEmpire%20Studio%0ATEL%3A%2B8801615288259%0AEMAIL%3Ateam.framempire%40gmail.com%0AURL%3Ahttps%3A%2F%2Fwww.framempire.com%0AEND%3AVCARD&color=000000&bcolor=ffffff`;
 
   const handleCopy = (text, fieldName) => {
     navigator.clipboard.writeText(text);
@@ -84,19 +39,10 @@ export default function HeroSection({ onExplorePortfolio, onOpenEstimator }) {
           margin: 0.15,
           filename: 'FramEmpire_Official_Contact_Card.pdf',
           image: { type: 'jpeg', quality: 0.98 },
-          html2canvas: { scale: 2, useCORS: true, allowTaint: true, logging: false },
+          html2canvas: { scale: 2, useCORS: true, logging: false },
           jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' }
         };
-        
-        const pdfBlob = await window.html2pdf().set(opt).from(element).output('blob');
-        const blobUrl = URL.createObjectURL(pdfBlob);
-        const link = document.createElement('a');
-        link.href = blobUrl;
-        link.download = 'FramEmpire_Official_Contact_Card.pdf';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
+        await window.html2pdf().set(opt).from(element).save();
       }
     } catch (err) {
       console.error('PDF download error:', err);
@@ -159,17 +105,17 @@ export default function HeroSection({ onExplorePortfolio, onOpenEstimator }) {
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 pt-2 sm:pt-4">
             <button
               onClick={onExplorePortfolio}
-              className="neon-button-primary justify-center w-full sm:w-auto"
+              className="neon-button-primary justify-center w-full sm:w-auto cursor-pointer"
               aria-label="Explore Portfolio Projects"
             >
               <span>Explore Portfolio</span>
               <ArrowRight className="w-4 h-4" />
             </button>
 
-            {/* Apple Liquid Glass Contact Card Button (No Emoji) */}
+            {/* Apple Liquid Glass Contact Card Button */}
             <button
               onClick={() => setShowContactModal(true)}
-              className="neon-button-secondary justify-center w-full sm:w-auto border-cyan-500/50 hover:border-cyan-400 text-cyan-300 hover:text-white bg-slate-900/80 hover:bg-cyan-950/90 shadow-[0_0_20px_rgba(0,243,255,0.25)]"
+              className="neon-button-secondary justify-center w-full sm:w-auto border-cyan-500/50 hover:border-cyan-400 text-cyan-300 hover:text-white bg-slate-900/80 hover:bg-cyan-950/90 shadow-[0_0_20px_rgba(0,243,255,0.25)] cursor-pointer"
               aria-label="Open Official Contact Card"
             >
               <Contact className="w-4 h-4 text-cyan-400" />
@@ -436,7 +382,7 @@ export default function HeroSection({ onExplorePortfolio, onOpenEstimator }) {
                 <div className="sm:col-span-5 flex flex-col items-center justify-center bg-slate-950 p-4 rounded-xl border border-cyan-500/30 shadow-lg text-center space-y-2">
                   <div className="p-2.5 bg-white rounded-xl border border-slate-200 shadow-md">
                     <img 
-                      src={qrBase64 || qrCodeDirectUrl} 
+                      src={qrCodeDirectUrl} 
                       alt="FramEmpire Contact QR Code" 
                       className="w-28 h-28 object-contain rounded-lg" 
                     />
