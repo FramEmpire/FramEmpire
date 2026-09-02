@@ -20,21 +20,23 @@ export default function HeroSection({ onExplorePortfolio, onOpenEstimator }) {
   const [showContactModal, setShowContactModal] = useState(false);
   const [copiedField, setCopiedField] = useState(null);
   const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
-  const [qrBase64, setQrBase64] = useState('');
-
-  const qrCodeDirectUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=BEGIN%3AVCARD%0AVERSION%3A3.0%0AN%3AFramEmpire%20Studio%0AFN%3AFramEmpire%20Studio%0ATEL%3A%2B8801615288259%0AEMAIL%3Ateam.framempire%40gmail.com%0AURL%3Ahttps%3A%2F%2Fwww.framempire.com%0AEND%3AVCARD&color=000000&bcolor=ffffff`;
+  const [qrDataUrl, setQrDataUrl] = useState('');
+  const [logoDataUrl, setLogoDataUrl] = useState('');
 
   useEffect(() => {
     if (!showContactModal) return;
     let isMounted = true;
-    const fetchQrBase64 = async () => {
+
+    // 1. Pre-fetch QR Code as Base64 DataURL
+    const fetchQr = async () => {
       try {
-        const res = await fetch(qrCodeDirectUrl);
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=BEGIN%3AVCARD%0AVERSION%3A3.0%0AN%3AFramEmpire%20Studio%0AFN%3AFramEmpire%20Studio%0ATEL%3A%2B8801615288259%0AEMAIL%3Ateam.framempire%40gmail.com%0AURL%3Ahttps%3A%2F%2Fwww.framempire.com%0AEND%3AVCARD&color=000000&bcolor=ffffff`;
+        const res = await fetch(qrUrl);
         const blob = await res.blob();
         const reader = new FileReader();
         reader.onloadend = () => {
           if (isMounted && reader.result) {
-            setQrBase64(reader.result);
+            setQrDataUrl(reader.result);
           }
         };
         reader.readAsDataURL(blob);
@@ -42,7 +44,27 @@ export default function HeroSection({ onExplorePortfolio, onOpenEstimator }) {
         console.error('QR fetch error:', err);
       }
     };
-    fetchQrBase64();
+
+    // 2. Pre-fetch White Logo as Base64 DataURL
+    const fetchLogo = async () => {
+      try {
+        const res = await fetch('/framempire_logo_white.png');
+        const blob = await res.blob();
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          if (isMounted && reader.result) {
+            setLogoDataUrl(reader.result);
+          }
+        };
+        reader.readAsDataURL(blob);
+      } catch (err) {
+        console.error('Logo fetch error:', err);
+      }
+    };
+
+    fetchQr();
+    fetchLogo();
+
     return () => { isMounted = false; };
   }, [showContactModal]);
 
@@ -65,7 +87,16 @@ export default function HeroSection({ onExplorePortfolio, onOpenEstimator }) {
           html2canvas: { scale: 2, useCORS: true, allowTaint: true, logging: false },
           jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' }
         };
-        await window.html2pdf().set(opt).from(element).save();
+        
+        const pdfBlob = await window.html2pdf().set(opt).from(element).output('blob');
+        const blobUrl = URL.createObjectURL(pdfBlob);
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = 'FramEmpire_Official_Contact_Card.pdf';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
       }
     } catch (err) {
       console.error('PDF download error:', err);
