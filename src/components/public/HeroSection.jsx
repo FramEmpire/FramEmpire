@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Sparkles, ArrowRight, Palette, Film, Code2, Star, Flame, Phone, Mail, Globe, Download, X, Copy, Check, QrCode, MessageCircle, Contact } from 'lucide-react';
 import { AGENCY_INFO } from '../../data/creativeData';
 
@@ -20,6 +20,31 @@ export default function HeroSection({ onExplorePortfolio, onOpenEstimator }) {
   const [showContactModal, setShowContactModal] = useState(false);
   const [copiedField, setCopiedField] = useState(null);
   const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
+  const [qrBase64, setQrBase64] = useState('');
+
+  const qrCodeDirectUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=BEGIN%3AVCARD%0AVERSION%3A3.0%0AN%3AFramEmpire%20Studio%0AFN%3AFramEmpire%20Studio%0ATEL%3A%2B8801615288259%0AEMAIL%3Ateam.framempire%40gmail.com%0AURL%3Ahttps%3A%2F%2Fwww.framempire.com%0AEND%3AVCARD&color=000000&bcolor=ffffff`;
+
+  useEffect(() => {
+    if (!showContactModal) return;
+    let isMounted = true;
+    const fetchQrBase64 = async () => {
+      try {
+        const res = await fetch(qrCodeDirectUrl);
+        const blob = await res.blob();
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          if (isMounted && reader.result) {
+            setQrBase64(reader.result);
+          }
+        };
+        reader.readAsDataURL(blob);
+      } catch (err) {
+        console.error('QR fetch error:', err);
+      }
+    };
+    fetchQrBase64();
+    return () => { isMounted = false; };
+  }, [showContactModal]);
 
   const handleCopy = (text, fieldName) => {
     navigator.clipboard.writeText(text);
@@ -37,7 +62,7 @@ export default function HeroSection({ onExplorePortfolio, onOpenEstimator }) {
           margin: 0.15,
           filename: 'FramEmpire_Official_Contact_Card.pdf',
           image: { type: 'jpeg', quality: 0.98 },
-          html2canvas: { scale: 2.5, useCORS: true, logging: false },
+          html2canvas: { scale: 2, useCORS: true, allowTaint: true, logging: false },
           jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' }
         };
         await window.html2pdf().set(opt).from(element).save();
@@ -48,8 +73,6 @@ export default function HeroSection({ onExplorePortfolio, onOpenEstimator }) {
       setIsDownloadingPdf(false);
     }
   };
-
-  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=BEGIN%3AVCARD%0AVERSION%3A3.0%0AN%3AFramEmpire%20Studio%0AFN%3AFramEmpire%20Studio%0ATEL%3A%2B8801615288259%0AEMAIL%3Ateam.framempire%40gmail.com%0AURL%3Ahttps%3A%2F%2Fwww.framempire.com%0AEND%3AVCARD&color=00f3ff&bcolor=070913`;
 
   return (
     <section className="relative min-h-[85vh] flex items-center justify-center pt-20 sm:pt-28 pb-12 sm:pb-16 px-4 overflow-hidden bg-grid-pattern">
@@ -101,7 +124,7 @@ export default function HeroSection({ onExplorePortfolio, onOpenEstimator }) {
             </div>
           </div>
 
-          {/* CTA Button Group */}
+          {/* CTA Button Group (ONLY 2 BUTTONS: Explore Portfolio & Contact Card) */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 pt-2 sm:pt-4">
             <button
               onClick={onExplorePortfolio}
@@ -112,23 +135,14 @@ export default function HeroSection({ onExplorePortfolio, onOpenEstimator }) {
               <ArrowRight className="w-4 h-4" />
             </button>
 
-            <button
-              onClick={onOpenEstimator}
-              className="neon-button-secondary justify-center w-full sm:w-auto"
-              aria-label="Open Project Cost Estimator"
-            >
-              <Sparkles className="w-4 h-4 text-cyan-400" />
-              <span>Project Estimator</span>
-            </button>
-
-            {/* Apple Liquid Glass Contact Card Button */}
+            {/* Apple Liquid Glass Contact Card Button (No Emoji) */}
             <button
               onClick={() => setShowContactModal(true)}
-              className="bg-slate-900/80 hover:bg-cyan-950/90 text-cyan-300 hover:text-white border border-cyan-500/50 hover:border-cyan-400 px-5 py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(0,243,255,0.25)] hover:shadow-[0_0_30px_rgba(0,243,255,0.4)] cursor-pointer group hover:scale-[1.02]"
+              className="neon-button-secondary justify-center w-full sm:w-auto border-cyan-500/50 hover:border-cyan-400 text-cyan-300 hover:text-white bg-slate-900/80 hover:bg-cyan-950/90 shadow-[0_0_20px_rgba(0,243,255,0.25)]"
               aria-label="Open Official Contact Card"
             >
-              <Contact className="w-4 h-4 text-cyan-400 group-hover:scale-110 transition-transform" />
-              <span>Contact Card 📇</span>
+              <Contact className="w-4 h-4 text-cyan-400" />
+              <span>Contact Card</span>
             </button>
           </div>
 
@@ -285,19 +299,21 @@ export default function HeroSection({ onExplorePortfolio, onOpenEstimator }) {
               {/* Card Ambient Neon Backdrop */}
               <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none" />
 
-              {/* Brand Logo & Studio Header */}
-              <div className="flex items-center justify-between border-b border-slate-800 pb-5 mb-5">
-                <div>
-                  <img src="/framempire_logo_white.png" alt="FramEmpire Studio" className="h-9 object-contain drop-shadow-[0_0_10px_rgba(0,243,255,0.5)]" />
-                  <h3 className="font-['Creato_Display'] text-xl font-extrabold text-white tracking-wide mt-2">FRAMEMPIRE STUDIO</h3>
-                  <p className="text-[11px] text-cyan-400 font-medium">A Revolution of Animation & Digital Engineering</p>
+              {/* Brand Logo Header (Prominent Logo Only) */}
+              <div className="flex items-center justify-between border-b border-slate-800 pb-4 mb-5">
+                <div className="flex items-center">
+                  <img 
+                    src="/framempire_logo_white.png" 
+                    alt="FramEmpire Studio" 
+                    className="h-12 sm:h-14 object-contain drop-shadow-[0_0_15px_rgba(0,243,255,0.6)]" 
+                  />
                 </div>
-                <div className="bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 text-[10px] font-mono font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                <div className="bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 text-[10px] font-mono font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
                   VERIFIED STUDIO
                 </div>
               </div>
 
-              {/* Grid: Contact Info + QR Code */}
+              {/* Grid: Contact Info + Black-on-White QR Code */}
               <div className="grid grid-cols-1 sm:grid-cols-12 gap-5 items-center">
                 
                 {/* Left: Contact Detail Items */}
@@ -385,11 +401,11 @@ export default function HeroSection({ onExplorePortfolio, onOpenEstimator }) {
 
                 </div>
 
-                {/* Right: High-Res Scannable QR Code */}
-                <div className="sm:col-span-5 flex flex-col items-center justify-center bg-slate-950 p-4 rounded-xl border border-cyan-500/40 shadow-lg text-center space-y-2">
-                  <div className="relative p-2 bg-slate-900 rounded-xl border border-cyan-400/60 shadow-[0_0_20px_rgba(0,243,255,0.25)]">
+                {/* Right: High-Contrast Black on White Scannable QR Code */}
+                <div className="sm:col-span-5 flex flex-col items-center justify-center bg-slate-950 p-4 rounded-xl border border-cyan-500/30 shadow-lg text-center space-y-2">
+                  <div className="p-2.5 bg-white rounded-xl border border-slate-200 shadow-md">
                     <img 
-                      src={qrCodeUrl} 
+                      src={qrBase64 || qrCodeDirectUrl} 
                       alt="FramEmpire Contact QR Code" 
                       className="w-28 h-28 object-contain rounded-lg" 
                     />
@@ -405,7 +421,7 @@ export default function HeroSection({ onExplorePortfolio, onOpenEstimator }) {
             </div>
 
             {/* Modal Bottom Download PDF Action Button */}
-            <div className="pt-2 flex items-center justify-between gap-3 relative z-10">
+            <div className="pt-1 flex items-center justify-between gap-3 relative z-10">
               <span className="text-[11px] text-slate-400 font-mono">
                 Apple Liquid Glass Edition • FramEmpire Contact Card
               </span>
@@ -413,10 +429,10 @@ export default function HeroSection({ onExplorePortfolio, onOpenEstimator }) {
               <button
                 onClick={handleDownloadPdf}
                 disabled={isDownloadingPdf}
-                className="bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 hover:from-cyan-400 hover:to-purple-500 text-white font-extrabold text-xs py-2.5 px-5 rounded-xl flex items-center gap-2 shadow-[0_0_20px_rgba(0,243,255,0.35)] hover:shadow-[0_0_30px_rgba(0,243,255,0.5)] transition-all border border-cyan-400 cursor-pointer disabled:opacity-50"
+                className="bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700 px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
               >
-                <Download className={`w-4 h-4 ${isDownloadingPdf ? 'animate-bounce' : ''}`} />
-                <span>{isDownloadingPdf ? 'Generating PDF...' : 'Download Card PDF'}</span>
+                <Download className={`w-3.5 h-3.5 text-cyan-400 ${isDownloadingPdf ? 'animate-bounce' : ''}`} />
+                <span>{isDownloadingPdf ? 'Downloading PDF...' : 'Download PDF'}</span>
               </button>
             </div>
 
@@ -428,4 +444,5 @@ export default function HeroSection({ onExplorePortfolio, onOpenEstimator }) {
     </section>
   );
 }
+
 
