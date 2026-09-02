@@ -21,7 +21,7 @@ export default function HeroSection({ onExplorePortfolio, onOpenEstimator }) {
   const [copiedField, setCopiedField] = useState(null);
   const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
 
-  const qrCodeDirectUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=BEGIN%3AVCARD%0AVERSION%3A3.0%0AN%3AFramEmpire%20Studio%0AFN%3AFramEmpire%20Studio%0ATEL%3A%2B8801615288259%0AEMAIL%3Ateam.framempire%40gmail.com%0AURL%3Ahttps%3A%2F%2Fwww.framempire.com%0AEND%3AVCARD&color=000000&bcolor=ffffff`;
+  const qrCodeDirectUrl = `https://quickchart.io/qr?text=BEGIN%3AVCARD%0AVERSION%3A3.0%0AN%3AFramEmpire%20Studio%0AFN%3AFramEmpire%20Studio%0ATEL%3A%2B8801615288259%0AEMAIL%3Ateam.framempire%40gmail.com%0AURL%3Ahttps%3A%2F%2Fwww.framempire.com%0AEND%3AVCARD&size=250&dark=000000&light=ffffff`;
 
   const handleCopy = (text, fieldName) => {
     navigator.clipboard.writeText(text);
@@ -36,13 +36,22 @@ export default function HeroSection({ onExplorePortfolio, onOpenEstimator }) {
       const element = document.getElementById('apple-contact-card-node');
       if (element && window.html2pdf) {
         const opt = {
-          margin: 0.15,
+          margin: 0.1,
           filename: 'FramEmpire_Official_Contact_Card.pdf',
           image: { type: 'jpeg', quality: 0.98 },
-          html2canvas: { scale: 2, useCORS: true, logging: false },
+          html2canvas: { scale: 2, useCORS: true, allowTaint: true, logging: false },
           jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' }
         };
-        await window.html2pdf().set(opt).from(element).save();
+        
+        const pdfBlob = await window.html2pdf().set(opt).from(element).output('blob');
+        const blobUrl = URL.createObjectURL(pdfBlob);
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = 'FramEmpire_Official_Contact_Card.pdf';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 3000);
       }
     } catch (err) {
       console.error('PDF download error:', err);
