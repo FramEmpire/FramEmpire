@@ -336,9 +336,68 @@ export default function PortfolioSection({ projects = PORTFOLIO_PROJECTS }) {
                 </div>
               </div>
 
+              {/* Apple Liquid Glass Full View Modal Button */}
+              <div className="pt-4 border-t border-slate-800/80 flex items-center justify-between gap-4">
+                <span className="text-xs text-slate-400 font-medium hidden sm:inline-block">
+                  Want to explore full archive for this category?
+                </span>
+
+                <a
+                  href={
+                    selectedProject.categoryKey === 'graphic-design'
+                      ? 'https://www.behance.net/PabelEDP'
+                      : 'https://drive.google.com/drive/folders/11m4hzel4I9Ctn7Zywgiz6M7QlT8voA7x?usp=share_link'
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="relative group inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-900/90 hover:bg-cyan-950 backdrop-blur-xl border border-cyan-500/40 hover:border-cyan-400 text-cyan-300 hover:text-white text-xs font-extrabold shadow-[0_0_20px_rgba(0,243,255,0.25)] hover:shadow-[0_0_30px_rgba(0,243,255,0.4)] transition-all ml-auto cursor-pointer"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                  <span>
+                    {selectedProject.categoryKey === 'graphic-design' ? 'See More Designs ✨' : 'See More Projects 🚀'}
+                  </span>
+                  <ExternalLink className="w-3.5 h-3.5 text-cyan-400 group-hover:translate-x-0.5 transition-transform" />
+                </a>
+              </div>
+
             </div>
           </div>
         )}
+
+        {/* Apple Liquid Glass Portfolio Extension CTA Banner at Bottom of Portfolio Grid */}
+        <div className="pt-8 sm:pt-12 border-t border-cyan-500/20 flex flex-col items-center justify-center text-center space-y-4">
+          <p className="text-slate-400 text-xs sm:text-sm font-medium max-w-md">
+            Want to explore our complete extended portfolio & master archives?
+          </p>
+
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            {(filter === 'all' || filter === 'motion-graphics' || filter === 'video-editing' || filter === 'web-dev') && (
+              <a
+                href="https://drive.google.com/drive/folders/11m4hzel4I9Ctn7Zywgiz6M7QlT8voA7x?usp=share_link"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative group inline-flex items-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-slate-900/80 hover:bg-cyan-950/90 backdrop-blur-2xl border border-cyan-500/40 hover:border-cyan-400 text-white font-extrabold text-xs sm:text-sm shadow-[0_0_25px_rgba(0,243,255,0.2)] hover:shadow-[0_0_40px_rgba(0,243,255,0.4)] transition-all duration-300 hover:scale-105 cursor-pointer"
+              >
+                <Sparkles className="w-4 h-4 text-cyan-400 group-hover:rotate-12 transition-transform" />
+                <span>See More Projects 🚀</span>
+                <ExternalLink className="w-4 h-4 text-cyan-400 group-hover:translate-x-0.5 transition-transform" />
+              </a>
+            )}
+
+            {(filter === 'all' || filter === 'graphic-design') && (
+              <a
+                href="https://www.behance.net/PabelEDP"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative group inline-flex items-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-slate-900/80 hover:bg-purple-950/90 backdrop-blur-2xl border border-purple-500/40 hover:border-purple-400 text-white font-extrabold text-xs sm:text-sm shadow-[0_0_25px_rgba(168,85,247,0.2)] hover:shadow-[0_0_40px_rgba(168,85,247,0.4)] transition-all duration-300 hover:scale-105 cursor-pointer"
+              >
+                <Palette className="w-4 h-4 text-purple-400 group-hover:rotate-12 transition-transform" />
+                <span>See More Designs ✨</span>
+                <ExternalLink className="w-4 h-4 text-purple-400 group-hover:translate-x-0.5 transition-transform" />
+              </a>
+            )}
+          </div>
+        </div>
 
       </div>
     </section>
